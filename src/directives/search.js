@@ -8,7 +8,7 @@ angular.module('search-dir').directive('search', function() {
 	return function(scope, element, attrs) {
 
 		function watcher(s) {
-			return s.inputSearch;
+			return s.model.inputSearch;
 		}
 
 		function listener(newVal, oldVal) {

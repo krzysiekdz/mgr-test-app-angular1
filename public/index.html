@@ -10,147 +10,23 @@
     <script src="main.js"></script>
 </head>
 
-<body >
-
+<body>
     <div class="app" ng-controller="mainCtrl">
-
-         
         <div class="menu">
-            <div >
-                <div class="div-header">
-                    <span class="label label-info header">AngularJS</span>    
-                    <button class="btn btn-default btn-clear" ng-click="clear()">clear</button> 
-                </div>
-
-                <div class="container-action" ng-controller="addCtrl">
-                    <button class="btn btn-default btn-menu"  ng-click="addFirst(addCount)">            add I</button>
-                    <button class="btn btn-default btn-menu"  ng-click="addMid(addCount)">              add II</button>
-                    <button class="btn btn-default btn-menu"  ng-click="addLast(addCount)">             add III</button>
-                    <div> 
-                        add:
-                        <input type="text" class="form-control input100" name="input-add" ng-model="addCount">
-                        elements
-                    </div>
-                </div>
-
-                <div class="container-action" ng-controller="replaceCtrl">
-                    <button class="btn btn-default btn-menu" name="replaceFirst" ng-click="replaceFirst(replCount)">         replace I</button>
-                    <button class="btn btn-default btn-menu" name="replaceMid"   ng-click="replaceMid(replCount)">         replace II</button>
-                    <button class="btn btn-default btn-menu" name="replaceLast"  ng-click="replaceLast(replCount)">         replace III</button>
-                    <div> 
-                        replace:
-                        <input type="text" class="form-control input100" name="input-replace" ng-model="replCount">
-                        elements
-                    </div>
-                </div>
-
-               
-                <div class="container-action" ng-controller="updateCtrl">
-                    <button class="btn btn-default btn-menu" name="updateColFirst" ng-click="updateFirst(col, word, replace)">           update I</button>
-                    <button class="btn btn-default btn-menu" name="updateColMid"   ng-click="updateMid(col, word, replace)">           update II</button>
-                    <button class="btn btn-default btn-menu" name="updateColLast"  ng-click="updateLast(col, word, replace)">           update III</button>
-                    <button class="btn btn-default btn-menu" name="update10"  ng-click="update10(col, word, replace)">            update evr10</button>
-                    <div class="checkbox"> 
-                        <label> 
-                            <input type="checkbox" name="checkbox-update-replace" ng-model="replace"> replace
-                        </label> 
-                    </div>
-                    <div>
-                        update with: <input type="text" class="form-control input150" name="input-update-text" ng-model="word"> 
-                        col: <input type="text" class="form-control input50" name="input-update-column" ng-model="col">
-                    </div>
-                </div>
-                
-                <div class="container-action" ng-controller="swapCtrl">
-                    <button class="btn btn-default btn-menu" name="swapFirst" ng-click="swapFirst()">             swap I</button>
-                    <button class="btn btn-default btn-menu" name="swapMid"   ng-click="swapMid()">             swap II</button>
-                    <button class="btn btn-default btn-menu" name="swapLast"  ng-click="swapLast()">             swap III</button>
-                </div>
-
-                <div class="container-action">
-                    <div class="checkbox">
-                        <label> 
-                            <input type="checkbox" name="checkbox-filter" ng-model="filter10_on"> filter10
-                        </label> 
-                    </div>
-                </div>
-
-                 <div class="container-action" ng-controller="fetchCtrl" >
-                    <button class="btn btn-default btn-menu" name="fetch1" ng-click="fetch(1000)">             fetch 1k</button>
-                    <button class="btn btn-default btn-menu" name="fetch2" ng-click="fetch(2000)">             fetch 2k</button>
-                    <button class="btn btn-default btn-menu" name="fetch3" ng-click="fetch(10000)">             fetch 10k</button>
-                </div>
-
-
-                <div class="input-group">
-                    <span class="input-group-addon">input:</span>
-                    <input type="text" class="form-control" placeholder="input..." name="input-input" ng-model="inputProp">
-                </div>
-
-                <div class="container-action">
-                    {{inputProp}}
-                </div>
-
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="edit..." name="input-edit" ng-model="model.data[0].c1">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" name="btn-edit">edit</button>
-                    </span>
-                </div>
-
-                <!-- <div class="input-group" ng-controller="searchInputCtrl">
-                    <input type="text" class="form-control" placeholder="search for..." name="input-search" ng-model="inputSearch" ng-change="searchFor(inputSearch)">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" name="btn-search">search</button>
-                    </span>
-                </div> -->
-
-                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="search for..." name="input-search" ng-model="inputSearch">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" name="btn-search">search</button>
-                    </span>
-                </div>
-
-                
-
-            </div>    
+            <ng-include src="view(views.menu.head)"></ng-include>
+            <ng-include src="view(views.menu.add)"></ng-include>
+            <ng-include src="view(views.menu.replace)"></ng-include>
+            <ng-include src="view(views.menu.update)"></ng-include>
+            <ng-include src="view(views.menu.swap)"></ng-include>
+            <ng-include src="view(views.menu.filter)"></ng-include>
+            <ng-include src="view(views.menu.fetch)"></ng-include>
+            <ng-include src="view(views.menu.input)"></ng-include>
+            <ng-include src="view(views.menu.edit)"></ng-include>
+            <ng-include src="view(views.menu.search)"></ng-include>
         </div>
 
-
-            
         <div class="content">
-            <table class="table" name="tableWrap" ng-controller="rowCtrl">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Surname</th>
-                        <th>Job</th>
-                        <th>Salary</th>
-                    </tr>
-                </thead>
-
-                <!-- <tbody name="table" ng-controller="searchTableCtrl"> -->
-                <tbody name="table" search>
-                    <tr ng-repeat="item in model.data | filter10:filter10_on" ng-click="selectItem(item)" ng-class="{selected : isSelected(item)}">
-                        <td class="col-md-1">{{item.id}}</td>
-                        <!-- <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 0) }">{{item.c1}}</td>
-                        <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 1) }">{{item.c2}}</td>
-                        <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 2) }">{{item.c3}}</td>
-                        <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 3) }">{{item.c4}}</td> -->
-                        <td class="col-md-2" >{{item.c1}}</td>
-                        <td class="col-md-2" >{{item.c2}}</td>
-                        <td class="col-md-2" >{{item.c3}}</td>
-                        <td class="col-md-2" >{{item.c4}}</td>
-                        <td>
-                            <button class="btn btn-default" ng-click="removeItem(item)">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <ng-include src="view(views.table)"></ng-include>
         </div>
 
     </div>

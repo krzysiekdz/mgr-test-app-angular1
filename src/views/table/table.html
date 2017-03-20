@@ -1,0 +1,35 @@
+<table class="table" ng-controller="rowCtrl">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Job</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+
+    <tbody name="table" search>
+    <!-- <tbody name="table" ng-controller="searchTableCtrl"> -->
+            
+        <tr ng-repeat="item in model.data | filter10:model.filter10_on" ng-click="selectItem(item)" ng-class="{selected : isSelected(item)}">
+            <td class="col-md-1">{{item.id}}</td>
+            <td class="col-md-2" >{{item.c1}}</td>
+            <td class="col-md-2" >{{item.c2}}</td>
+            <td class="col-md-2" >{{item.c3}}</td>
+            <td class="col-md-2" >{{item.c4}}</td>
+
+            <!-- <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 0) }">{{item.c1}}</td>
+            <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 1) }">{{item.c2}}</td>
+            <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 2) }">{{item.c3}}</td>
+            <td class="col-md-2" ng-class="{'search-selected' : isSearched(item, 3) }">{{item.c4}}</td> -->
+
+            <td>
+                <button class="btn btn-default" ng-click="removeItem(item)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </td>
+        </tr>
+
+    </tbody>
+</table>

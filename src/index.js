@@ -25,7 +25,28 @@ var fn;
 var ctrl = app.controller('mainCtrl', fn = function($scope, r) {
 	$scope.model = {
 		data: [],
+		inputSearch: ""
 	};
+
+	$scope.views = {
+		menu: {
+			head: 'menu/header',
+			add: 'menu/add',
+			replace: 'menu/replace',
+			update: 'menu/update',
+			swap: 'menu/swap',
+			filter: 'menu/filter',
+			fetch: 'menu/fetch',
+			input: 'menu/input',
+			edit: 'menu/edit',	
+			search: 'menu/search'
+		},
+		table: 'table/table'
+	}
+
+	$scope.view = function(v) {
+		return '../src/views/' + v + '.html';
+	}
 
 	$scope.clear = function() {
 		$scope.model.data = [];
@@ -35,6 +56,4 @@ var ctrl = app.controller('mainCtrl', fn = function($scope, r) {
 });
 
 fn.$inject = ['$scope', 'randomObjects'];
-
-//uporządkowac menu, za pomoca dyrektyw lub widokow - tak zeby nie bylo tak duzo kodu widocznego naraz - tzn jeszcze go zrefaktorowac
 
