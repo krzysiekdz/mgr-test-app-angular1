@@ -5,6 +5,7 @@ import angular from 'angular';
 import './services/randomService.js';
 
 import './directives/search.js';
+import './directives/filter.js';
 
 import './filters/filter.js';
 
@@ -19,7 +20,11 @@ import './controllers/searchCtrl.js';
 //---------------- app -------------
 
 var app = angular.module('app', 
-	['random-serv', 'add-ctrl', 'replace-ctrl', 'update-ctrl', 'swap-ctrl', 'filter10-filter', 'fetch-ctrl', 'search-dir', 'search-ctrl', 'row-ctrl']);
+	['random-serv', 'add-ctrl', 'replace-ctrl', 'update-ctrl', 'swap-ctrl', 'filter10-filter', 'fetch-ctrl', 'search-dir', 'filter10-dir', 'search-ctrl', 'row-ctrl']);
+
+app.config(['$compileProvider', function ($compileProvider) {
+    $compileProvider.debugInfoEnabled(false);
+}]);
 
 var fn;
 var ctrl = app.controller('mainCtrl', fn = function($scope, r) {
@@ -31,6 +36,7 @@ var ctrl = app.controller('mainCtrl', fn = function($scope, r) {
 	$scope.views = {
 		menu: {
 			head: 'menu/header',
+			init: 'menu/init',
 			add: 'menu/add',
 			replace: 'menu/replace',
 			update: 'menu/update',
