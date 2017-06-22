@@ -14,8 +14,10 @@ angular.module('filter10-dir').directive('filter', function() {
 			if(scope.model.data.length > 0) {
 				if(newVal) {
 					filter10();
+					element.addClass('filtered');
 				} else {
 					unfilter10();
+					element.removeClass('filtered');
 				}
 			}
 		}

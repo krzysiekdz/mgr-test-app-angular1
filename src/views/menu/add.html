@@ -1,7 +1,7 @@
 <div class="container-action" ng-controller="addCtrl">
-    <button class="btn btn-default btn-menu"  ng-click="addFirst(addCount)">            add I</button>
-    <button class="btn btn-default btn-menu"  ng-click="addMid(addCount)">              add II</button>
-    <button class="btn btn-default btn-menu"  ng-click="addLast(addCount)">             add III</button>
+    <button class="btn btn-default btn-menu"  name="addFirst" ng-click="addFirst(addCount)">            add I</button>
+    <button class="btn btn-default btn-menu"  name="addMid" ng-click="addMid(addCount)">              add II</button>
+    <button class="btn btn-default btn-menu"  name="addLast" ng-click="addLast(addCount)">             add III</button>
     <div> 
         add:
         <input type="text" class="form-control input100" name="input-add" ng-model="addCount">

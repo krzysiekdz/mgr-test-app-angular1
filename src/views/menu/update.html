@@ -1,15 +1,16 @@
 <div class="container-action" ng-controller="updateCtrl">
-    <button class="btn btn-default btn-menu" name="updateColFirst" ng-click="updateFirst(col, word, replace)">           update I</button>
-    <button class="btn btn-default btn-menu" name="updateColMid"   ng-click="updateMid(col, word, replace)">           update II</button>
-    <button class="btn btn-default btn-menu" name="updateColLast"  ng-click="updateLast(col, word, replace)">           update III</button>
-    <button class="btn btn-default btn-menu" name="update10"  ng-click="update10(col, word, replace)">            update evr10</button>
-    <div class="checkbox"> 
-        <label> 
-            <input type="checkbox" name="checkbox-update-replace" ng-model="replace"> replace
-        </label> 
+    <button class="btn btn-default btn-menu"  ng-click="updateFirst(count)" name="updateFirst">         update I</button>
+    <button class="btn btn-default btn-menu"  ng-click="updateMid(count)" name="updateMid">           update II</button>
+    <button class="btn btn-default btn-menu"  ng-click="updateLast(count)" name="updateLast">          update III</button>
+    <div class="menu-block">
+        update: 
+        <input type="text" class="form-control input150" ng-model="count" name="input-update"> 
+        elements
     </div>
     <div>
-        update with: <input type="text" class="form-control input150" name="input-update-text" ng-model="word"> 
-        col: <input type="text" class="form-control input50" name="input-update-column" ng-model="col">
+        <button class="btn btn-default btn-menu"  ng-click="partialUpdate(every)" name="updateEvery">   update</button>
+        every 
+        <input type="text" class="form-control input50"  ng-model="every" name="input-update-every">
+        th element
     </div>
 </div>

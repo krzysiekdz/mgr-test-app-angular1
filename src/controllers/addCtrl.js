@@ -3,7 +3,7 @@ import angular from 'angular';
 angular.module('add-ctrl', [])
 	.controller('addCtrl', ['$scope', 'randomObjects',  function($scope, r) {
 
-		$scope.addCount = 10;
+		$scope.addCount = '';
 
 		$scope.addFirst = function(count) {
 			var newData = r.randomObjects(count);

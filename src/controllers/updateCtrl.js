@@ -1,67 +1,66 @@
 import angular from 'angular';
 
 angular.module('update-ctrl', [])
-	.controller('updateCtrl', ['$scope',  function($scope) {
+	.controller('updateCtrl', ['$scope', 'randomObjects', 'util',  function($scope, r, util) {
 
-		$scope.col = 2;
-		$scope.word = 'a';
-		$scope.replace = true;
+		$scope.count = '';
+		$scope.every = '';
 
-		$scope.updateFirst = function(col, word, replace) {
-			updateCol(1, col, word, replace);
-		}
-
-		$scope.updateMid = function(col, word, replace) {
-			updateCol(2, col, word, replace);
-		}
-
-		$scope.updateLast = function(col, word, replace) {
-			updateCol(3, col, word, replace);
-		}
-
-		
-		$scope.update10 = function(col, word, replace) {
-			col--;
-			var colName = 'c' + col;
+		$scope.updateFirst = function(count) {
+			count = util.parseNumber(count, 1, 10000);
 			var data = $scope.model.data;
-			if(data.length > 10) {
-				for(var i = 0; i < data.length; i += 10) {
-					if(replace) {
-						data[i][colName] = word;
-					} else {
-						data[i][colName] += word;
-					}
-					//angular work is like this
-					// var tr = data[i].ref;
-					// tr.cells[col].innerText = data[i][colName];
+			if(data.length >= count) {
+				var newData = r.randomObjects(count);
+				for(var i = 0; i < count; i++) {
+					update(data[i], newData[i]);
 				}
-			}
+			} 
 		}
 
-		function updateCol(type, col, word, replace) {
-			col--;
+		$scope.updateMid = function(count) {
+			count = util.parseNumber(count, 1, 10000);
 			var data = $scope.model.data;
-			if(data.length > 0 && (col > 0 && col < 5)) {
-				var i = getTypePos(type);
-				var colName = 'c' + col;
-				if(replace) {
-					data[i][colName] = word;
-				} else {
-					data[i][colName] += word;
+			if(data.length >= count) {
+				var newData = r.randomObjects(count);
+				var start = Math.floor(data.length / 2) - Math.floor(count/2);
+				var end = start + count;
+				for(var i = start, j = 0; i < end; i++, j++) {
+					update(data[i], newData[j]);
 				}
-				//angular work is like this
-				// var tr = data[i].ref;
-				// tr.cells[col].innerText = data[i][colName];
-			}
+			} 
 		}
 
-		function getTypePos(type) {
+		$scope.updateLast = function(count) {
+			count = util.parseNumber(count, 1, 10000);
 			var data = $scope.model.data;
-			switch(type) {
-				case 1 : return 0;
-				case 2 : return Math.floor(data.length/2);
-				case 3 : return data.length - 1;
-			}
+			if(data.length >= count) {
+				var newData = r.randomObjects(count);
+				var start = data.length - count;
+				var end = start + count;
+				for(var i = start, j = 0; i < end; i++, j++) {
+					update(data[i], newData[j]);
+				}
+			} 
+		}
+
+		$scope.partialUpdate = function(every) {
+			every = util.parseNumber(every, 1, 1000);
+			var data = $scope.model.data;
+			var count = Math.ceil(data.length / every);
+			if(data.length > 0) {
+				var newData = r.randomObjects(count);
+				for(var i = 0, j = 0; i < data.length; i+=every, j++) {
+					update(data[i], newData[j]);
+				}
+			} 
+		}
+	
+		function update(item, newItem) {
+			item.id = newItem.id;
+			item.c1 = newItem.c1;
+			item.c2 = newItem.c2;
+			item.c3 = newItem.c3;
+			item.c4 = newItem.c4;
 		}
 		
 	}]);

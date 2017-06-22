@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,7 +73,7 @@
 "use strict";
 
 
-__webpack_require__(12);
+__webpack_require__(13);
 module.exports = angular;
 
 /***/ }),
@@ -155,54 +155,46 @@ var _angular2 = _interopRequireDefault(_angular);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_angular2.default.module('replace-ctrl', []).controller('replaceCtrl', ['$scope', 'randomObjects', function ($scope, r) {
+_angular2.default.module('replace-ctrl', []).controller('replaceCtrl', ['$scope', 'randomObjects', 'util', function ($scope, r, util) {
 
-	$scope.replCount = 10;
+	$scope.count = 10;
 
 	$scope.replaceFirst = function (count) {
-		count = Number(count);
+		count = util.parseNumber(count, 1, 10000);
 		var data = $scope.model.data;
 		if (data.length >= count) {
 			var newData = r.randomObjects(count);
 			for (var i = 0; i < count; i++) {
-				replace(data[i], newData[i]);
+				data[i] = newData[i];
 			}
 		}
 	};
 
 	$scope.replaceMid = function (count) {
-		count = Number(count);
+		count = util.parseNumber(count, 1, 10000);
 		var data = $scope.model.data;
 		if (data.length >= count) {
 			var newData = r.randomObjects(count);
 			var start = Math.floor(data.length / 2) - Math.floor(count / 2);
 			var end = start + count;
 			for (var i = start, j = 0; i < end; i++, j++) {
-				replace(data[i], newData[j]);
+				data[i] = newData[j];
 			}
 		}
 	};
 
 	$scope.replaceLast = function (count) {
-		count = Number(count);
+		count = util.parseNumber(count, 1, 10000);
 		var data = $scope.model.data;
 		if (data.length >= count) {
 			var newData = r.randomObjects(count);
 			var start = data.length - count;
 			var end = start + count;
 			for (var i = start, j = 0; i < end; i++, j++) {
-				replace(data[i], newData[j]);
+				data[i] = newData[j];
 			}
 		}
 	};
-
-	function replace(item, newItem) {
-		item.id = newItem.id;
-		item.c1 = newItem.c1;
-		item.c2 = newItem.c2;
-		item.c3 = newItem.c3;
-		item.c4 = newItem.c4;
-	}
 }]);
 
 /***/ }),
@@ -354,69 +346,66 @@ var _angular2 = _interopRequireDefault(_angular);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_angular2.default.module('update-ctrl', []).controller('updateCtrl', ['$scope', function ($scope) {
+_angular2.default.module('update-ctrl', []).controller('updateCtrl', ['$scope', 'randomObjects', 'util', function ($scope, r, util) {
 
-	$scope.col = 2;
-	$scope.word = 'a';
-	$scope.replace = true;
+	$scope.count = 1;
+	$scope.every = 4;
 
-	$scope.updateFirst = function (col, word, replace) {
-		updateCol(1, col, word, replace);
-	};
-
-	$scope.updateMid = function (col, word, replace) {
-		updateCol(2, col, word, replace);
-	};
-
-	$scope.updateLast = function (col, word, replace) {
-		updateCol(3, col, word, replace);
-	};
-
-	$scope.update10 = function (col, word, replace) {
-		col--;
-		var colName = 'c' + col;
+	$scope.updateFirst = function (count) {
+		count = util.parseNumber(count, 1, 10000);
 		var data = $scope.model.data;
-		if (data.length > 10) {
-			for (var i = 0; i < data.length; i += 10) {
-				if (replace) {
-					data[i][colName] = word;
-				} else {
-					data[i][colName] += word;
-				}
-				//angular work is like this
-				// var tr = data[i].ref;
-				// tr.cells[col].innerText = data[i][colName];
+		if (data.length >= count) {
+			var newData = r.randomObjects(count);
+			for (var i = 0; i < count; i++) {
+				update(data[i], newData[i]);
 			}
 		}
 	};
 
-	function updateCol(type, col, word, replace) {
-		col--;
+	$scope.updateMid = function (count) {
+		count = util.parseNumber(count, 1, 10000);
 		var data = $scope.model.data;
-		if (data.length > 0 && col > 0 && col < 5) {
-			var i = getTypePos(type);
-			var colName = 'c' + col;
-			if (replace) {
-				data[i][colName] = word;
-			} else {
-				data[i][colName] += word;
+		if (data.length >= count) {
+			var newData = r.randomObjects(count);
+			var start = Math.floor(data.length / 2) - Math.floor(count / 2);
+			var end = start + count;
+			for (var i = start, j = 0; i < end; i++, j++) {
+				update(data[i], newData[j]);
 			}
-			//angular work is like this
-			// var tr = data[i].ref;
-			// tr.cells[col].innerText = data[i][colName];
 		}
-	}
+	};
 
-	function getTypePos(type) {
+	$scope.updateLast = function (count) {
+		count = util.parseNumber(count, 1, 10000);
 		var data = $scope.model.data;
-		switch (type) {
-			case 1:
-				return 0;
-			case 2:
-				return Math.floor(data.length / 2);
-			case 3:
-				return data.length - 1;
+		if (data.length >= count) {
+			var newData = r.randomObjects(count);
+			var start = data.length - count;
+			var end = start + count;
+			for (var i = start, j = 0; i < end; i++, j++) {
+				update(data[i], newData[j]);
+			}
 		}
+	};
+
+	$scope.partialUpdate = function (every) {
+		every = util.parseNumber(every, 1, 1000);
+		var data = $scope.model.data;
+		var count = Math.ceil(data.length / every);
+		if (data.length > 0) {
+			var newData = r.randomObjects(count);
+			for (var i = 0, j = 0; i < data.length; i += every, j++) {
+				update(data[i], newData[j]);
+			}
+		}
+	};
+
+	function update(item, newItem) {
+		item.id = newItem.id;
+		item.c1 = newItem.c1;
+		item.c2 = newItem.c2;
+		item.c3 = newItem.c3;
+		item.c4 = newItem.c4;
 	}
 }]);
 
@@ -647,8 +636,36 @@ _angular2.default.module('random-serv', []).factory('randomObjects', function ()
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+var _angular = __webpack_require__(0);
+
+var _angular2 = _interopRequireDefault(_angular);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_angular2.default.module('util-serv', []).factory('util', function () {
+
+	function parseNumber(val, min, max) {
+		val = Number(val);
+		if (val >= min && val <= max) {
+			return val;
+		}
+		throw "string-parse exception:" + val;
+	}
+
+	return {
+		parseNumber: parseNumber
+	};
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};/**
- * @license AngularJS v1.6.3
+ * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */(function(window){'use strict';/**
@@ -679,7 +696,7 @@ var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?functi
  * @param {function} ErrorConstructor Custom error constructor to be instantiated when returning
  *   error from returned function, for cases when a particular type of error is useful.
  * @returns {function(code:string, template:string, ...templateArgs): Error} minErr instance
- */function minErr(module,ErrorConstructor){ErrorConstructor=ErrorConstructor||Error;return function(){var code=arguments[0],template=arguments[1],message='['+(module?module+':':'')+code+'] ',templateArgs=sliceArgs(arguments,2).map(function(arg){return toDebugString(arg,minErrConfig.objectMaxDepth);}),paramPrefix,i;message+=template.replace(/\{\d+\}/g,function(match){var index=+match.slice(1,-1);if(index<templateArgs.length){return templateArgs[index];}return match;});message+='\nhttp://errors.angularjs.org/1.6.3/'+(module?module+'/':'')+code;for(i=0,paramPrefix='?';i<templateArgs.length;i++,paramPrefix='&'){message+=paramPrefix+'p'+i+'='+encodeURIComponent(templateArgs[i]);}return new ErrorConstructor(message);};}/* We need to tell ESLint what variables are being exported *//* exported
+ */function minErr(module,ErrorConstructor){ErrorConstructor=ErrorConstructor||Error;return function(){var code=arguments[0],template=arguments[1],message='['+(module?module+':':'')+code+'] ',templateArgs=sliceArgs(arguments,2).map(function(arg){return toDebugString(arg,minErrConfig.objectMaxDepth);}),paramPrefix,i;message+=template.replace(/\{\d+\}/g,function(match){var index=+match.slice(1,-1);if(index<templateArgs.length){return templateArgs[index];}return match;});message+='\nhttp://errors.angularjs.org/1.6.4/'+(module?module+'/':'')+code;for(i=0,paramPrefix='?';i<templateArgs.length;i++,paramPrefix='&'){message+=paramPrefix+'p'+i+'='+encodeURIComponent(templateArgs[i]);}return new ErrorConstructor(message);};}/* We need to tell ESLint what variables are being exported *//* exported
   angular,
   msie,
   jqLite,
@@ -740,6 +757,7 @@ var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?functi
   includes,
   arrayRemove,
   copy,
+  simpleCompare,
   equals,
   csp,
   jq,
@@ -1204,7 +1222,8 @@ for(key in source){if(hasOwnProperty.call(source,key)){destination[key]=copyElem
 if(!isObject(source)){return source;}// Already copied values
 var index=stackSource.indexOf(source);if(index!==-1){return stackDest[index];}if(isWindow(source)||isScope(source)){throw ngMinErr('cpws','Can\'t copy! Making copies of Window or Scope instances is not supported.');}var needsRecurse=false;var destination=copyType(source);if(destination===undefined){destination=isArray(source)?[]:Object.create(getPrototypeOf(source));needsRecurse=true;}stackSource.push(source);stackDest.push(destination);return needsRecurse?copyRecurse(source,destination,maxDepth):destination;}function copyType(source){switch(toString.call(source)){case'[object Int8Array]':case'[object Int16Array]':case'[object Int32Array]':case'[object Float32Array]':case'[object Float64Array]':case'[object Uint8Array]':case'[object Uint8ClampedArray]':case'[object Uint16Array]':case'[object Uint32Array]':return new source.constructor(copyElement(source.buffer),source.byteOffset,source.length);case'[object ArrayBuffer]':// Support: IE10
 if(!source.slice){// If we're in this case we know the environment supports ArrayBuffer
-/* eslint-disable no-undef */var copied=new ArrayBuffer(source.byteLength);new Uint8Array(copied).set(new Uint8Array(source));/* eslint-enable */return copied;}return source.slice(0);case'[object Boolean]':case'[object Number]':case'[object String]':case'[object Date]':return new source.constructor(source.valueOf());case'[object RegExp]':var re=new RegExp(source.source,source.toString().match(/[^/]*$/)[0]);re.lastIndex=source.lastIndex;return re;case'[object Blob]':return new source.constructor([source],{type:source.type});}if(isFunction(source.cloneNode)){return source.cloneNode(true);}}}/**
+/* eslint-disable no-undef */var copied=new ArrayBuffer(source.byteLength);new Uint8Array(copied).set(new Uint8Array(source));/* eslint-enable */return copied;}return source.slice(0);case'[object Boolean]':case'[object Number]':case'[object String]':case'[object Date]':return new source.constructor(source.valueOf());case'[object RegExp]':var re=new RegExp(source.source,source.toString().match(/[^/]*$/)[0]);re.lastIndex=source.lastIndex;return re;case'[object Blob]':return new source.constructor([source],{type:source.type});}if(isFunction(source.cloneNode)){return source.cloneNode(true);}}}// eslint-disable-next-line no-self-compare
+function simpleCompare(a,b){return a===b||a!==a&&b!==b;}/**
  * @ngdoc function
  * @name angular.equals
  * @module ng
@@ -1268,7 +1287,7 @@ if(!source.slice){// If we're in this case we know the environment supports Arra
   </example>
  */function equals(o1,o2){if(o1===o2)return true;if(o1===null||o2===null)return false;// eslint-disable-next-line no-self-compare
 if(o1!==o1&&o2!==o2)return true;// NaN === NaN
-var t1=typeof o1==='undefined'?'undefined':_typeof(o1),t2=typeof o2==='undefined'?'undefined':_typeof(o2),length,key,keySet;if(t1===t2&&t1==='object'){if(isArray(o1)){if(!isArray(o2))return false;if((length=o1.length)===o2.length){for(key=0;key<length;key++){if(!equals(o1[key],o2[key]))return false;}return true;}}else if(isDate(o1)){if(!isDate(o2))return false;return equals(o1.getTime(),o2.getTime());}else if(isRegExp(o1)){if(!isRegExp(o2))return false;return o1.toString()===o2.toString();}else{if(isScope(o1)||isScope(o2)||isWindow(o1)||isWindow(o2)||isArray(o2)||isDate(o2)||isRegExp(o2))return false;keySet=createMap();for(key in o1){if(key.charAt(0)==='$'||isFunction(o1[key]))continue;if(!equals(o1[key],o2[key]))return false;keySet[key]=true;}for(key in o2){if(!(key in keySet)&&key.charAt(0)!=='$'&&isDefined(o2[key])&&!isFunction(o2[key]))return false;}return true;}}return false;}var csp=function csp(){if(!isDefined(csp.rules)){var ngCspElement=window.document.querySelector('[ng-csp]')||window.document.querySelector('[data-ng-csp]');if(ngCspElement){var ngCspAttribute=ngCspElement.getAttribute('ng-csp')||ngCspElement.getAttribute('data-ng-csp');csp.rules={noUnsafeEval:!ngCspAttribute||ngCspAttribute.indexOf('no-unsafe-eval')!==-1,noInlineStyle:!ngCspAttribute||ngCspAttribute.indexOf('no-inline-style')!==-1};}else{csp.rules={noUnsafeEval:noUnsafeEval(),noInlineStyle:false};}}return csp.rules;function noUnsafeEval(){try{// eslint-disable-next-line no-new, no-new-func
+var t1=typeof o1==='undefined'?'undefined':_typeof(o1),t2=typeof o2==='undefined'?'undefined':_typeof(o2),length,key,keySet;if(t1===t2&&t1==='object'){if(isArray(o1)){if(!isArray(o2))return false;if((length=o1.length)===o2.length){for(key=0;key<length;key++){if(!equals(o1[key],o2[key]))return false;}return true;}}else if(isDate(o1)){if(!isDate(o2))return false;return simpleCompare(o1.getTime(),o2.getTime());}else if(isRegExp(o1)){if(!isRegExp(o2))return false;return o1.toString()===o2.toString();}else{if(isScope(o1)||isScope(o2)||isWindow(o1)||isWindow(o2)||isArray(o2)||isDate(o2)||isRegExp(o2))return false;keySet=createMap();for(key in o1){if(key.charAt(0)==='$'||isFunction(o1[key]))continue;if(!equals(o1[key],o2[key]))return false;keySet[key]=true;}for(key in o2){if(!(key in keySet)&&key.charAt(0)!=='$'&&isDefined(o2[key])&&!isFunction(o2[key]))return false;}return true;}}return false;}var csp=function csp(){if(!isDefined(csp.rules)){var ngCspElement=window.document.querySelector('[ng-csp]')||window.document.querySelector('[data-ng-csp]');if(ngCspElement){var ngCspAttribute=ngCspElement.getAttribute('ng-csp')||ngCspElement.getAttribute('data-ng-csp');csp.rules={noUnsafeEval:!ngCspAttribute||ngCspAttribute.indexOf('no-unsafe-eval')!==-1,noInlineStyle:!ngCspAttribute||ngCspAttribute.indexOf('no-inline-style')!==-1};}else{csp.rules={noUnsafeEval:noUnsafeEval(),noInlineStyle:false};}}return csp.rules;function noUnsafeEval(){try{// eslint-disable-next-line no-new, no-new-func
 new Function('');return false;}catch(e){return true;}}};/**
  * @ngdoc directive
  * @module ng
@@ -2040,8 +2059,8 @@ if(isValidObjectMaxDepth(maxDepth)){obj=copy(obj,null,maxDepth);}return JSON.str
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */var version={// These placeholder strings will be replaced by grunt's `build` task.
 // They need to be double- or single-quoted.
-full:'1.6.3',major:1,minor:6,dot:3,codeName:'scriptalicious-bootstrapping'};function publishExternalAPI(angular){extend(angular,{'errorHandlingConfig':errorHandlingConfig,'bootstrap':bootstrap,'copy':copy,'extend':extend,'merge':merge,'equals':equals,'element':jqLite,'forEach':forEach,'injector':createInjector,'noop':noop,'bind':bind,'toJson':toJson,'fromJson':fromJson,'identity':identity,'isUndefined':isUndefined,'isDefined':isDefined,'isString':isString,'isFunction':isFunction,'isObject':isObject,'isNumber':isNumber,'isElement':isElement,'isArray':isArray,'version':version,'isDate':isDate,'lowercase':lowercase,'uppercase':uppercase,'callbacks':{$$counter:0},'getTestability':getTestability,'reloadWithDebugInfo':reloadWithDebugInfo,'$$minErr':minErr,'$$csp':csp,'$$encodeUriSegment':encodeUriSegment,'$$encodeUriQuery':encodeUriQuery,'$$stringify':stringify});angularModule=setupModuleLoader(window);angularModule('ng',['ngLocale'],['$provide',function ngModule($provide){// $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
-$provide.provider({$$sanitizeUri:$$SanitizeUriProvider});$provide.provider('$compile',$CompileProvider).directive({a:htmlAnchorDirective,input:inputDirective,textarea:inputDirective,form:formDirective,script:scriptDirective,select:selectDirective,option:optionDirective,ngBind:ngBindDirective,ngBindHtml:ngBindHtmlDirective,ngBindTemplate:ngBindTemplateDirective,ngClass:ngClassDirective,ngClassEven:ngClassEvenDirective,ngClassOdd:ngClassOddDirective,ngCloak:ngCloakDirective,ngController:ngControllerDirective,ngForm:ngFormDirective,ngHide:ngHideDirective,ngIf:ngIfDirective,ngInclude:ngIncludeDirective,ngInit:ngInitDirective,ngNonBindable:ngNonBindableDirective,ngPluralize:ngPluralizeDirective,ngRepeat:ngRepeatDirective,ngShow:ngShowDirective,ngStyle:ngStyleDirective,ngSwitch:ngSwitchDirective,ngSwitchWhen:ngSwitchWhenDirective,ngSwitchDefault:ngSwitchDefaultDirective,ngOptions:ngOptionsDirective,ngTransclude:ngTranscludeDirective,ngModel:ngModelDirective,ngList:ngListDirective,ngChange:ngChangeDirective,pattern:patternDirective,ngPattern:patternDirective,required:requiredDirective,ngRequired:requiredDirective,minlength:minlengthDirective,ngMinlength:minlengthDirective,maxlength:maxlengthDirective,ngMaxlength:maxlengthDirective,ngValue:ngValueDirective,ngModelOptions:ngModelOptionsDirective}).directive({ngInclude:ngIncludeFillContentDirective}).directive(ngAttributeAliasDirectives).directive(ngEventDirectives);$provide.provider({$anchorScroll:$AnchorScrollProvider,$animate:$AnimateProvider,$animateCss:$CoreAnimateCssProvider,$$animateJs:$$CoreAnimateJsProvider,$$animateQueue:$$CoreAnimateQueueProvider,$$AnimateRunner:$$AnimateRunnerFactoryProvider,$$animateAsyncRun:$$AnimateAsyncRunFactoryProvider,$browser:$BrowserProvider,$cacheFactory:$CacheFactoryProvider,$controller:$ControllerProvider,$document:$DocumentProvider,$$isDocumentHidden:$$IsDocumentHiddenProvider,$exceptionHandler:$ExceptionHandlerProvider,$filter:$FilterProvider,$$forceReflow:$$ForceReflowProvider,$interpolate:$InterpolateProvider,$interval:$IntervalProvider,$http:$HttpProvider,$httpParamSerializer:$HttpParamSerializerProvider,$httpParamSerializerJQLike:$HttpParamSerializerJQLikeProvider,$httpBackend:$HttpBackendProvider,$xhrFactory:$xhrFactoryProvider,$jsonpCallbacks:$jsonpCallbacksProvider,$location:$LocationProvider,$log:$LogProvider,$parse:$ParseProvider,$rootScope:$RootScopeProvider,$q:$QProvider,$$q:$$QProvider,$sce:$SceProvider,$sceDelegate:$SceDelegateProvider,$sniffer:$SnifferProvider,$templateCache:$TemplateCacheProvider,$templateRequest:$TemplateRequestProvider,$$testability:$$TestabilityProvider,$timeout:$TimeoutProvider,$window:$WindowProvider,$$rAF:$$RAFProvider,$$jqLite:$$jqLiteProvider,$$Map:$$MapProvider,$$cookieReader:$$CookieReaderProvider});}]).info({angularVersion:'1.6.3'});}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+full:'1.6.4',major:1,minor:6,dot:4,codeName:'phenomenal-footnote'};function publishExternalAPI(angular){extend(angular,{'errorHandlingConfig':errorHandlingConfig,'bootstrap':bootstrap,'copy':copy,'extend':extend,'merge':merge,'equals':equals,'element':jqLite,'forEach':forEach,'injector':createInjector,'noop':noop,'bind':bind,'toJson':toJson,'fromJson':fromJson,'identity':identity,'isUndefined':isUndefined,'isDefined':isDefined,'isString':isString,'isFunction':isFunction,'isObject':isObject,'isNumber':isNumber,'isElement':isElement,'isArray':isArray,'version':version,'isDate':isDate,'lowercase':lowercase,'uppercase':uppercase,'callbacks':{$$counter:0},'getTestability':getTestability,'reloadWithDebugInfo':reloadWithDebugInfo,'$$minErr':minErr,'$$csp':csp,'$$encodeUriSegment':encodeUriSegment,'$$encodeUriQuery':encodeUriQuery,'$$stringify':stringify});angularModule=setupModuleLoader(window);angularModule('ng',['ngLocale'],['$provide',function ngModule($provide){// $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
+$provide.provider({$$sanitizeUri:$$SanitizeUriProvider});$provide.provider('$compile',$CompileProvider).directive({a:htmlAnchorDirective,input:inputDirective,textarea:inputDirective,form:formDirective,script:scriptDirective,select:selectDirective,option:optionDirective,ngBind:ngBindDirective,ngBindHtml:ngBindHtmlDirective,ngBindTemplate:ngBindTemplateDirective,ngClass:ngClassDirective,ngClassEven:ngClassEvenDirective,ngClassOdd:ngClassOddDirective,ngCloak:ngCloakDirective,ngController:ngControllerDirective,ngForm:ngFormDirective,ngHide:ngHideDirective,ngIf:ngIfDirective,ngInclude:ngIncludeDirective,ngInit:ngInitDirective,ngNonBindable:ngNonBindableDirective,ngPluralize:ngPluralizeDirective,ngRepeat:ngRepeatDirective,ngShow:ngShowDirective,ngStyle:ngStyleDirective,ngSwitch:ngSwitchDirective,ngSwitchWhen:ngSwitchWhenDirective,ngSwitchDefault:ngSwitchDefaultDirective,ngOptions:ngOptionsDirective,ngTransclude:ngTranscludeDirective,ngModel:ngModelDirective,ngList:ngListDirective,ngChange:ngChangeDirective,pattern:patternDirective,ngPattern:patternDirective,required:requiredDirective,ngRequired:requiredDirective,minlength:minlengthDirective,ngMinlength:minlengthDirective,maxlength:maxlengthDirective,ngMaxlength:maxlengthDirective,ngValue:ngValueDirective,ngModelOptions:ngModelOptionsDirective}).directive({ngInclude:ngIncludeFillContentDirective}).directive(ngAttributeAliasDirectives).directive(ngEventDirectives);$provide.provider({$anchorScroll:$AnchorScrollProvider,$animate:$AnimateProvider,$animateCss:$CoreAnimateCssProvider,$$animateJs:$$CoreAnimateJsProvider,$$animateQueue:$$CoreAnimateQueueProvider,$$AnimateRunner:$$AnimateRunnerFactoryProvider,$$animateAsyncRun:$$AnimateAsyncRunFactoryProvider,$browser:$BrowserProvider,$cacheFactory:$CacheFactoryProvider,$controller:$ControllerProvider,$document:$DocumentProvider,$$isDocumentHidden:$$IsDocumentHiddenProvider,$exceptionHandler:$ExceptionHandlerProvider,$filter:$FilterProvider,$$forceReflow:$$ForceReflowProvider,$interpolate:$InterpolateProvider,$interval:$IntervalProvider,$http:$HttpProvider,$httpParamSerializer:$HttpParamSerializerProvider,$httpParamSerializerJQLike:$HttpParamSerializerJQLikeProvider,$httpBackend:$HttpBackendProvider,$xhrFactory:$xhrFactoryProvider,$jsonpCallbacks:$jsonpCallbacksProvider,$location:$LocationProvider,$log:$LogProvider,$parse:$ParseProvider,$rootScope:$RootScopeProvider,$q:$QProvider,$$q:$$QProvider,$sce:$SceProvider,$sceDelegate:$SceDelegateProvider,$sniffer:$SnifferProvider,$templateCache:$TemplateCacheProvider,$templateRequest:$TemplateRequestProvider,$$testability:$$TestabilityProvider,$timeout:$TimeoutProvider,$window:$WindowProvider,$$rAF:$$RAFProvider,$$jqLite:$$jqLiteProvider,$$Map:$$MapProvider,$$cookieReader:$$CookieReaderProvider});}]).info({angularVersion:'1.6.4'});}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *     Any commits to this file should be reviewed with security in mind.  *
  *   Changes to this file can potentially create security vulnerabilities. *
  *          An approval from 2 Core members with history of modifying      *
@@ -2166,7 +2185,7 @@ return this.cache[node[this.expando]]||{};};function jqNextId(){return++jqId;}va
  * @param name Name to normalize
  */function kebabToCamel(name){return name.replace(DASH_LOWERCASE_REGEXP,fnCamelCaseReplace);}var SINGLE_TAG_REGEXP=/^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;var HTML_REGEXP=/<|&#?\w+;/;var TAG_NAME_REGEXP=/<([\w:-]+)/;var XHTML_TAG_REGEXP=/<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi;var wrapMap={'option':[1,'<select multiple="multiple">','</select>'],'thead':[1,'<table>','</table>'],'col':[2,'<table><colgroup>','</colgroup></table>'],'tr':[2,'<table><tbody>','</tbody></table>'],'td':[3,'<table><tbody><tr>','</tr></tbody></table>'],'_default':[0,'','']};wrapMap.optgroup=wrapMap.option;wrapMap.tbody=wrapMap.tfoot=wrapMap.colgroup=wrapMap.caption=wrapMap.thead;wrapMap.th=wrapMap.td;function jqLiteIsTextNode(html){return!HTML_REGEXP.test(html);}function jqLiteAcceptsData(node){// The window object can accept data but has no nodeType
 // Otherwise we are only interested in elements (1) and documents (9)
-var nodeType=node.nodeType;return nodeType===NODE_TYPE_ELEMENT||!nodeType||nodeType===NODE_TYPE_DOCUMENT;}function jqLiteHasData(node){for(var key in jqCache[node.ng339]){return true;}return false;}function jqLiteCleanData(nodes){for(var i=0,ii=nodes.length;i<ii;i++){jqLiteRemoveData(nodes[i]);}}function jqLiteBuildFragment(html,context){var tmp,tag,wrap,fragment=context.createDocumentFragment(),nodes=[],i;if(jqLiteIsTextNode(html)){// Convert non-html into a text node
+var nodeType=node.nodeType;return nodeType===NODE_TYPE_ELEMENT||!nodeType||nodeType===NODE_TYPE_DOCUMENT;}function jqLiteHasData(node){for(var key in jqCache[node.ng339]){return true;}return false;}function jqLiteBuildFragment(html,context){var tmp,tag,wrap,fragment=context.createDocumentFragment(),nodes=[],i;if(jqLiteIsTextNode(html)){// Convert non-html into a text node
 nodes.push(context.createTextNode(html));}else{// Convert html into DOM nodes
 tmp=fragment.appendChild(context.createElement('div'));tag=(TAG_NAME_REGEXP.exec(html)||['',''])[1].toLowerCase();wrap=wrapMap[tag]||wrapMap._default;tmp.innerHTML=wrap[1]+html.replace(XHTML_TAG_REGEXP,'<$1></$2>')+wrap[2];// Descend through wrappers to the right content
 i=wrap[0];while(i--){tmp=tmp.lastChild;}nodes=concat(nodes,tmp.childNodes);tmp=fragment.firstChild;tmp.textContent='';}// Remove wrapper from fragment
@@ -2174,7 +2193,7 @@ fragment.textContent='';fragment.innerHTML='';// Clear inner HTML
 forEach(nodes,function(node){fragment.appendChild(node);});return fragment;}function jqLiteParseHTML(html,context){context=context||window.document;var parsed;if(parsed=SINGLE_TAG_REGEXP.exec(html)){return[context.createElement(parsed[1])];}if(parsed=jqLiteBuildFragment(html,context)){return parsed.childNodes;}return[];}function jqLiteWrapNode(node,wrapper){var parent=node.parentNode;if(parent){parent.replaceChild(wrapper,node);}wrapper.appendChild(node);}// IE9-11 has no method "contains" in SVG element and in Node.prototype. Bug #10259.
 var jqLiteContains=window.Node.prototype.contains||/** @this */function(arg){// eslint-disable-next-line no-bitwise
 return!!(this.compareDocumentPosition(arg)&16);};/////////////////////////////////////////////
-function JQLite(element){if(element instanceof JQLite){return element;}var argIsString;if(isString(element)){element=trim(element);argIsString=true;}if(!(this instanceof JQLite)){if(argIsString&&element.charAt(0)!=='<'){throw jqLiteMinErr('nosel','Looking up elements via selectors is not supported by jqLite! See: http://docs.angularjs.org/api/angular.element');}return new JQLite(element);}if(argIsString){jqLiteAddNodes(this,jqLiteParseHTML(element));}else if(isFunction(element)){jqLiteReady(element);}else{jqLiteAddNodes(this,element);}}function jqLiteClone(element){return element.cloneNode(true);}function jqLiteDealoc(element,onlyDescendants){if(!onlyDescendants)jqLiteRemoveData(element);if(element.querySelectorAll){var descendants=element.querySelectorAll('*');for(var i=0,l=descendants.length;i<l;i++){jqLiteRemoveData(descendants[i]);}}}function jqLiteOff(element,type,fn,unsupported){if(isDefined(unsupported))throw jqLiteMinErr('offargs','jqLite#off() does not support the `selector` argument');var expandoStore=jqLiteExpandoStore(element);var events=expandoStore&&expandoStore.events;var handle=expandoStore&&expandoStore.handle;if(!handle)return;//no listeners registered
+function JQLite(element){if(element instanceof JQLite){return element;}var argIsString;if(isString(element)){element=trim(element);argIsString=true;}if(!(this instanceof JQLite)){if(argIsString&&element.charAt(0)!=='<'){throw jqLiteMinErr('nosel','Looking up elements via selectors is not supported by jqLite! See: http://docs.angularjs.org/api/angular.element');}return new JQLite(element);}if(argIsString){jqLiteAddNodes(this,jqLiteParseHTML(element));}else if(isFunction(element)){jqLiteReady(element);}else{jqLiteAddNodes(this,element);}}function jqLiteClone(element){return element.cloneNode(true);}function jqLiteDealoc(element,onlyDescendants){if(!onlyDescendants&&jqLiteAcceptsData(element))jqLite.cleanData([element]);if(element.querySelectorAll){jqLite.cleanData(element.querySelectorAll('*'));}}function jqLiteOff(element,type,fn,unsupported){if(isDefined(unsupported))throw jqLiteMinErr('offargs','jqLite#off() does not support the `selector` argument');var expandoStore=jqLiteExpandoStore(element);var events=expandoStore&&expandoStore.events;var handle=expandoStore&&expandoStore.handle;if(!handle)return;//no listeners registered
 if(!type){for(type in events){if(type!=='$destroy'){element.removeEventListener(type,handle);}delete events[type];}}else{var removeHandler=function removeHandler(type){var listenerFns=events[type];if(isDefined(fn)){arrayRemove(listenerFns||[],fn);}if(!(isDefined(fn)&&listenerFns&&listenerFns.length>0)){element.removeEventListener(type,handle);delete events[type];}};forEach(type.split(' '),function(type){removeHandler(type);if(MOUSE_EVENT_MAP[type]){removeHandler(MOUSE_EVENT_MAP[type]);}});}}function jqLiteRemoveData(element,name){var expandoId=element.ng339;var expandoStore=expandoId&&jqCache[expandoId];if(expandoStore){if(name){delete expandoStore.data[name];return;}if(expandoStore.handle){if(expandoStore.events.$destroy){expandoStore.handle({},'$destroy');}jqLiteOff(element);}delete jqCache[expandoId];element.ng339=undefined;// don't delete DOM expandos. IE and Chrome don't like it
 }}function jqLiteExpandoStore(element,createIfNecessary){var expandoId=element.ng339,expandoStore=expandoId&&jqCache[expandoId];if(createIfNecessary&&!expandoStore){element.ng339=expandoId=jqNextId();expandoStore=jqCache[expandoId]={events:{},data:{},handle:undefined};}return expandoStore;}function jqLiteData(element,key,value){if(jqLiteAcceptsData(element)){var prop;var isSimpleSetter=isDefined(value);var isSimpleGetter=!isSimpleSetter&&key&&!isObject(key);var massGetter=!key;var expandoStore=jqLiteExpandoStore(element,!isSimpleGetter);var data=expandoStore&&expandoStore.data;if(isSimpleSetter){// data('key', value)
 data[kebabToCamel(key)]=value;}else{if(massGetter){// data()
@@ -2207,7 +2226,7 @@ var JQLitePrototype=JQLite.prototype={ready:jqLiteReady,toString:function toStri
 //////////////////////////////////////////
 var BOOLEAN_ATTR={};forEach('multiple,selected,checked,disabled,readOnly,required,open'.split(','),function(value){BOOLEAN_ATTR[lowercase(value)]=value;});var BOOLEAN_ELEMENTS={};forEach('input,select,option,textarea,button,form,details'.split(','),function(value){BOOLEAN_ELEMENTS[value]=true;});var ALIASED_ATTR={'ngMinlength':'minlength','ngMaxlength':'maxlength','ngMin':'min','ngMax':'max','ngPattern':'pattern','ngStep':'step'};function getBooleanAttrName(element,name){// check dom last since we will most likely fail on name
 var booleanAttr=BOOLEAN_ATTR[name.toLowerCase()];// booleanAttr is here twice to minimize DOM access
-return booleanAttr&&BOOLEAN_ELEMENTS[nodeName_(element)]&&booleanAttr;}function getAliasedAttrName(name){return ALIASED_ATTR[name];}forEach({data:jqLiteData,removeData:jqLiteRemoveData,hasData:jqLiteHasData,cleanData:jqLiteCleanData},function(fn,name){JQLite[name]=fn;});forEach({data:jqLiteData,inheritedData:jqLiteInheritedData,scope:function scope(element){// Can't use jqLiteData here directly so we stay compatible with jQuery!
+return booleanAttr&&BOOLEAN_ELEMENTS[nodeName_(element)]&&booleanAttr;}function getAliasedAttrName(name){return ALIASED_ATTR[name];}forEach({data:jqLiteData,removeData:jqLiteRemoveData,hasData:jqLiteHasData,cleanData:function jqLiteCleanData(nodes){for(var i=0,ii=nodes.length;i<ii;i++){jqLiteRemoveData(nodes[i]);}}},function(fn,name){JQLite[name]=fn;});forEach({data:jqLiteData,inheritedData:jqLiteInheritedData,scope:function scope(element){// Can't use jqLiteData here directly so we stay compatible with jQuery!
 return jqLite.data(element,'$scope')||jqLiteInheritedData(element.parentNode||element,['$isolateScope','$scope']);},isolateScope:function isolateScope(element){// Can't use jqLiteData here directly so we stay compatible with jQuery!
 return jqLite.data(element,'$isolateScope')||jqLite.data(element,'$isolateScopeNoTemplate');},controller:jqLiteController,injector:function injector(element){return jqLiteInheritedData(element,'$injector');},removeAttr:function removeAttr(element,name){element.removeAttribute(name);},hasClass:jqLiteHasClass,css:function css(element,name,value){name=cssKebabToCamel(name);if(isDefined(value)){element.style[name]=value;}else{return element.style[name];}},attr:function attr(element,name,value){var ret;var nodeType=element.nodeType;if(nodeType===NODE_TYPE_TEXT||nodeType===NODE_TYPE_ATTRIBUTE||nodeType===NODE_TYPE_COMMENT||!element.getAttribute){return;}var lowercasedName=lowercase(name);var isBooleanAttr=BOOLEAN_ATTR[lowercasedName];if(isDefined(value)){// setter
 if(value===null||value===false&&isBooleanAttr){element.removeAttribute(name);}else{element.setAttribute(name,isBooleanAttr?lowercasedName:value);}}else{// getter
@@ -4205,9 +4224,9 @@ if(prevEntry)prevEntry.n=nextEntry;//n stands for next, 'next' didn't minify
  * initialized.
  *
  * <div class="alert alert-warning">
- * **Deprecation warning:** although bindings for non-ES6 class controllers are currently
- * bound to `this` before the controller constructor is called, this use is now deprecated. Please place initialization
- * code that relies upon bindings inside a `$onInit` method on the controller, instead.
+ * **Deprecation warning:** if `$compileProcvider.preAssignBindingsEnabled(true)` was called, bindings for non-ES6 class
+ * controllers are bound to `this` before the controller constructor is called but this use is now deprecated. Please
+ * place initialization code that relies upon bindings inside a `$onInit` method on the controller, instead.
  * </div>
  *
  * It is also possible to set `bindToController` to an object hash with the same format as the `scope` property.
@@ -4979,7 +4998,14 @@ if(isFunction(controller))controller[key]=val;}});factory.$inject=['$injector'];
    *
    * If disabled (false), the compiler calls the constructor first before assigning bindings.
    *
-   * The default value is true in Angular 1.5.x but will switch to false in Angular 1.6.x.
+   * The default value is false.
+   *
+   * @deprecated
+   * sinceVersion="1.6.0"
+   * removeVersion="1.7.0"
+   *
+   * This method and the option to assign the bindings before calling the controller's constructor
+   * will be removed in v1.7.0.
    */var preAssignBindingsEnabled=false;this.preAssignBindingsEnabled=function(enabled){if(isDefined(enabled)){preAssignBindingsEnabled=enabled;return this;}return preAssignBindingsEnabled;};var TTL=10;/**
    * @ngdoc method
    * @name $compileProvider#onChangesTtl
@@ -5433,15 +5459,13 @@ lastValue,parentGet,parentSet,compare,removeWatch;switch(mode){case'@':if(!optio
 // the value is there for use in the link fn
 destination[scopeName]=$interpolate(lastValue)(scope);}else if(isBoolean(lastValue)){// If the attributes is one of the BOOLEAN_ATTR then Angular will have converted
 // the value to boolean rather than a string, so we special case this situation
-destination[scopeName]=lastValue;}initialChanges[scopeName]=new SimpleChange(_UNINITIALIZED_VALUE,destination[scopeName]);removeWatchCollection.push(removeWatch);break;case'=':if(!hasOwnProperty.call(attrs,attrName)){if(optional)break;attrs[attrName]=undefined;}if(optional&&!attrs[attrName])break;parentGet=$parse(attrs[attrName]);if(parentGet.literal){compare=equals;}else{// eslint-disable-next-line no-self-compare
-compare=function simpleCompare(a,b){return a===b||a!==a&&b!==b;};}parentSet=parentGet.assign||function(){// reset the change, or we will throw this exception on every $digest
+destination[scopeName]=lastValue;}initialChanges[scopeName]=new SimpleChange(_UNINITIALIZED_VALUE,destination[scopeName]);removeWatchCollection.push(removeWatch);break;case'=':if(!hasOwnProperty.call(attrs,attrName)){if(optional)break;attrs[attrName]=undefined;}if(optional&&!attrs[attrName])break;parentGet=$parse(attrs[attrName]);if(parentGet.literal){compare=equals;}else{compare=simpleCompare;}parentSet=parentGet.assign||function(){// reset the change, or we will throw this exception on every $digest
 lastValue=destination[scopeName]=parentGet(scope);throw $compileMinErr('nonassign','Expression \'{0}\' in attribute \'{1}\' used with directive \'{2}\' is non-assignable!',attrs[attrName],attrName,directive.name);};lastValue=destination[scopeName]=parentGet(scope);var parentValueWatch=function parentValueWatch(parentValue){if(!compare(parentValue,destination[scopeName])){// we are out of sync and need to copy
 if(!compare(parentValue,lastValue)){// parent changed and it has precedence
 destination[scopeName]=parentValue;}else{// if the parent can be assigned then do so
 parentSet(scope,parentValue=destination[scopeName]);}}lastValue=parentValue;return lastValue;};parentValueWatch.$stateful=true;if(definition.collection){removeWatch=scope.$watchCollection(attrs[attrName],parentValueWatch);}else{removeWatch=scope.$watch($parse(attrs[attrName],parentValueWatch),null,parentGet.literal);}removeWatchCollection.push(removeWatch);break;case'<':if(!hasOwnProperty.call(attrs,attrName)){if(optional)break;attrs[attrName]=undefined;}if(optional&&!attrs[attrName])break;parentGet=$parse(attrs[attrName]);var deepWatch=parentGet.literal;var initialValue=destination[scopeName]=parentGet(scope);initialChanges[scopeName]=new SimpleChange(_UNINITIALIZED_VALUE,destination[scopeName]);removeWatch=scope.$watch(parentGet,function parentValueWatchAction(newValue,oldValue){if(oldValue===newValue){if(oldValue===initialValue||deepWatch&&equals(oldValue,initialValue)){return;}oldValue=initialValue;}recordChanges(scopeName,newValue,oldValue);destination[scopeName]=newValue;},deepWatch);removeWatchCollection.push(removeWatch);break;case'&':// Don't assign Object.prototype method to scope
 parentGet=attrs.hasOwnProperty(attrName)?$parse(attrs[attrName]):noop;// Don't assign noop to destination if expression is not valid
-if(parentGet===noop&&optional)break;destination[scopeName]=function(locals){return parentGet(scope,locals);};break;}});function recordChanges(key,currentValue,previousValue){if(isFunction(destination.$onChanges)&&currentValue!==previousValue&&(// eslint-disable-next-line no-self-compare
-currentValue===currentValue||previousValue===previousValue)){// If we have not already scheduled the top level onChangesQueue handler then do so now
+if(parentGet===noop&&optional)break;destination[scopeName]=function(locals){return parentGet(scope,locals);};break;}});function recordChanges(key,currentValue,previousValue){if(isFunction(destination.$onChanges)&&!simpleCompare(currentValue,previousValue)){// If we have not already scheduled the top level onChangesQueue handler then do so now
 if(!onChangesQueue){scope.$$postDigest(flushOnChangesQueue);onChangesQueue=[];}// If we have not already queued a trigger of onChanges for this controller then do so now
 if(!changes){changes={};onChangesQueue.push(triggerOnChangesHook);}// If the has been a change on this property already then we need to reuse the previous value
 if(changes[key]){previousValue=changes[key].previousValue;}// Store this change
@@ -5696,7 +5720,7 @@ if(domNode){if(!domNode.nodeType&&domNode instanceof jqLite){domNode=domNode[0];
    * ```
    *
    * */this.$get=function(){return function jQueryLikeParamSerializer(params){if(!params)return'';var parts=[];serialize(params,'',true);return parts.join('&');function serialize(toSerialize,prefix,topLevel){if(toSerialize===null||isUndefined(toSerialize))return;if(isArray(toSerialize)){forEach(toSerialize,function(value,index){serialize(value,prefix+'['+(isObject(value)?index:'')+']');});}else if(isObject(toSerialize)&&!isDate(toSerialize)){forEachSorted(toSerialize,function(value,key){serialize(value,prefix+(topLevel?'':'[')+key+(topLevel?'':']'));});}else{parts.push(encodeUriQuery(prefix)+'='+encodeUriQuery(serializeValue(toSerialize)));}}};};}function defaultHttpResponseTransform(data,headers){if(isString(data)){// Strip json vulnerability protection prefix and trim whitespace
-var tempData=data.replace(JSON_PROTECTION_PREFIX,'').trim();if(tempData){var contentType=headers('Content-Type');if(contentType&&contentType.indexOf(APPLICATION_JSON)===0||isJsonLike(tempData)){data=fromJson(tempData);}}}return data;}function isJsonLike(str){var jsonStart=str.match(JSON_START);return jsonStart&&JSON_ENDS[jsonStart[0]].test(str);}/**
+var tempData=data.replace(JSON_PROTECTION_PREFIX,'').trim();if(tempData){var contentType=headers('Content-Type');if(contentType&&contentType.indexOf(APPLICATION_JSON)===0||isJsonLike(tempData)){try{data=fromJson(tempData);}catch(e){throw $httpMinErr('baddata','Data must be a valid JSON object. Received: "{0}". '+'Parse error: "{1}"',data,e);}}}}return data;}function isJsonLike(str){var jsonStart=str.match(JSON_START);return jsonStart&&JSON_ENDS[jsonStart[0]].test(str);}/**
  * Parse headers into key value object
  *
  * @param {string} headers Raw headers as a string
@@ -6785,7 +6809,7 @@ expressions:expressions,$$watchDelegate:function $$watchDelegate(scope,listener)
       * @param {boolean=} [invokeApply=true] If set to `false` skips model dirty checking, otherwise
       *   will invoke `fn` within the {@link ng.$rootScope.Scope#$apply $apply} block.
       * @param {...*=} Pass additional parameters to the executed function.
-      * @returns {promise} A promise which will be notified on each iteration.
+      * @returns {promise} A promise which will be notified on each iteration. It will resolve once all iterations of the interval complete.
       *
       * @example
       * <example module="intervalExample" name="interval-service">
@@ -7494,14 +7518,14 @@ return(ch.charCodeAt(0)<<10)+ch.charCodeAt(1)-0x35FDC00;},peekMultichar:function
 AST.NGValueParameter='NGValueParameter';AST.prototype={ast:function ast(text){this.text=text;this.tokens=this.lexer.lex(text);var value=this.program();if(this.tokens.length!==0){this.throwError('is an unexpected token',this.tokens[0]);}return value;},program:function program(){var body=[];while(true){if(this.tokens.length>0&&!this.peek('}',')',';',']'))body.push(this.expressionStatement());if(!this.expect(';')){return{type:AST.Program,body:body};}}},expressionStatement:function expressionStatement(){return{type:AST.ExpressionStatement,expression:this.filterChain()};},filterChain:function filterChain(){var left=this.expression();while(this.expect('|')){left=this.filter(left);}return left;},expression:function expression(){return this.assignment();},assignment:function assignment(){var result=this.ternary();if(this.expect('=')){if(!isAssignable(result)){throw $parseMinErr('lval','Trying to assign a value to a non l-value');}result={type:AST.AssignmentExpression,left:result,right:this.assignment(),operator:'='};}return result;},ternary:function ternary(){var test=this.logicalOR();var alternate;var consequent;if(this.expect('?')){alternate=this.expression();if(this.consume(':')){consequent=this.expression();return{type:AST.ConditionalExpression,test:test,alternate:alternate,consequent:consequent};}}return test;},logicalOR:function logicalOR(){var left=this.logicalAND();while(this.expect('||')){left={type:AST.LogicalExpression,operator:'||',left:left,right:this.logicalAND()};}return left;},logicalAND:function logicalAND(){var left=this.equality();while(this.expect('&&')){left={type:AST.LogicalExpression,operator:'&&',left:left,right:this.equality()};}return left;},equality:function equality(){var left=this.relational();var token;while(token=this.expect('==','!=','===','!==')){left={type:AST.BinaryExpression,operator:token.text,left:left,right:this.relational()};}return left;},relational:function relational(){var left=this.additive();var token;while(token=this.expect('<','>','<=','>=')){left={type:AST.BinaryExpression,operator:token.text,left:left,right:this.additive()};}return left;},additive:function additive(){var left=this.multiplicative();var token;while(token=this.expect('+','-')){left={type:AST.BinaryExpression,operator:token.text,left:left,right:this.multiplicative()};}return left;},multiplicative:function multiplicative(){var left=this.unary();var token;while(token=this.expect('*','/','%')){left={type:AST.BinaryExpression,operator:token.text,left:left,right:this.unary()};}return left;},unary:function unary(){var token;if(token=this.expect('+','-','!')){return{type:AST.UnaryExpression,operator:token.text,prefix:true,argument:this.unary()};}else{return this.primary();}},primary:function primary(){var primary;if(this.expect('(')){primary=this.filterChain();this.consume(')');}else if(this.expect('[')){primary=this.arrayDeclaration();}else if(this.expect('{')){primary=this.object();}else if(this.selfReferential.hasOwnProperty(this.peek().text)){primary=copy(this.selfReferential[this.consume().text]);}else if(this.options.literals.hasOwnProperty(this.peek().text)){primary={type:AST.Literal,value:this.options.literals[this.consume().text]};}else if(this.peek().identifier){primary=this.identifier();}else if(this.peek().constant){primary=this.constant();}else{this.throwError('not a primary expression',this.peek());}var next;while(next=this.expect('(','[','.')){if(next.text==='('){primary={type:AST.CallExpression,callee:primary,arguments:this.parseArguments()};this.consume(')');}else if(next.text==='['){primary={type:AST.MemberExpression,object:primary,property:this.expression(),computed:true};this.consume(']');}else if(next.text==='.'){primary={type:AST.MemberExpression,object:primary,property:this.identifier(),computed:false};}else{this.throwError('IMPOSSIBLE');}}return primary;},filter:function filter(baseExpression){var args=[baseExpression];var result={type:AST.CallExpression,callee:this.identifier(),arguments:args,filter:true};while(this.expect(':')){args.push(this.expression());}return result;},parseArguments:function parseArguments(){var args=[];if(this.peekToken().text!==')'){do{args.push(this.filterChain());}while(this.expect(','));}return args;},identifier:function identifier(){var token=this.consume();if(!token.identifier){this.throwError('is not a valid identifier',token);}return{type:AST.Identifier,name:token.text};},constant:function constant(){// TODO check that it is a constant
 return{type:AST.Literal,value:this.consume().value};},arrayDeclaration:function arrayDeclaration(){var elements=[];if(this.peekToken().text!==']'){do{if(this.peek(']')){// Support trailing commas per ES5.1.
 break;}elements.push(this.expression());}while(this.expect(','));}this.consume(']');return{type:AST.ArrayExpression,elements:elements};},object:function object(){var properties=[],property;if(this.peekToken().text!=='}'){do{if(this.peek('}')){// Support trailing commas per ES5.1.
-break;}property={type:AST.Property,kind:'init'};if(this.peek().constant){property.key=this.constant();property.computed=false;this.consume(':');property.value=this.expression();}else if(this.peek().identifier){property.key=this.identifier();property.computed=false;if(this.peek(':')){this.consume(':');property.value=this.expression();}else{property.value=property.key;}}else if(this.peek('[')){this.consume('[');property.key=this.expression();this.consume(']');property.computed=true;this.consume(':');property.value=this.expression();}else{this.throwError('invalid key',this.peek());}properties.push(property);}while(this.expect(','));}this.consume('}');return{type:AST.ObjectExpression,properties:properties};},throwError:function throwError(msg,token){throw $parseMinErr('syntax','Syntax Error: Token \'{0}\' {1} at column {2} of the expression [{3}] starting at [{4}].',token.text,msg,token.index+1,this.text,this.text.substring(token.index));},consume:function consume(e1){if(this.tokens.length===0){throw $parseMinErr('ueoe','Unexpected end of expression: {0}',this.text);}var token=this.expect(e1);if(!token){this.throwError('is unexpected, expecting ['+e1+']',this.peek());}return token;},peekToken:function peekToken(){if(this.tokens.length===0){throw $parseMinErr('ueoe','Unexpected end of expression: {0}',this.text);}return this.tokens[0];},peek:function peek(e1,e2,e3,e4){return this.peekAhead(0,e1,e2,e3,e4);},peekAhead:function peekAhead(i,e1,e2,e3,e4){if(this.tokens.length>i){var token=this.tokens[i];var t=token.text;if(t===e1||t===e2||t===e3||t===e4||!e1&&!e2&&!e3&&!e4){return token;}}return false;},expect:function expect(e1,e2,e3,e4){var token=this.peek(e1,e2,e3,e4);if(token){this.tokens.shift();return token;}return false;},selfReferential:{'this':{type:AST.ThisExpression},'$locals':{type:AST.LocalsExpression}}};function ifDefined(v,d){return typeof v!=='undefined'?v:d;}function plusFn(l,r){if(typeof l==='undefined')return r;if(typeof r==='undefined')return l;return l+r;}function isStateless($filter,filterName){var fn=$filter(filterName);return!fn.$stateful;}function findConstantAndWatchExpressions(ast,$filter){var allConstants;var argsToWatch;var isStatelessFilter;switch(ast.type){case AST.Program:allConstants=true;forEach(ast.body,function(expr){findConstantAndWatchExpressions(expr.expression,$filter);allConstants=allConstants&&expr.expression.constant;});ast.constant=allConstants;break;case AST.Literal:ast.constant=true;ast.toWatch=[];break;case AST.UnaryExpression:findConstantAndWatchExpressions(ast.argument,$filter);ast.constant=ast.argument.constant;ast.toWatch=ast.argument.toWatch;break;case AST.BinaryExpression:findConstantAndWatchExpressions(ast.left,$filter);findConstantAndWatchExpressions(ast.right,$filter);ast.constant=ast.left.constant&&ast.right.constant;ast.toWatch=ast.left.toWatch.concat(ast.right.toWatch);break;case AST.LogicalExpression:findConstantAndWatchExpressions(ast.left,$filter);findConstantAndWatchExpressions(ast.right,$filter);ast.constant=ast.left.constant&&ast.right.constant;ast.toWatch=ast.constant?[]:[ast];break;case AST.ConditionalExpression:findConstantAndWatchExpressions(ast.test,$filter);findConstantAndWatchExpressions(ast.alternate,$filter);findConstantAndWatchExpressions(ast.consequent,$filter);ast.constant=ast.test.constant&&ast.alternate.constant&&ast.consequent.constant;ast.toWatch=ast.constant?[]:[ast];break;case AST.Identifier:ast.constant=false;ast.toWatch=[ast];break;case AST.MemberExpression:findConstantAndWatchExpressions(ast.object,$filter);if(ast.computed){findConstantAndWatchExpressions(ast.property,$filter);}ast.constant=ast.object.constant&&(!ast.computed||ast.property.constant);ast.toWatch=[ast];break;case AST.CallExpression:isStatelessFilter=ast.filter?isStateless($filter,ast.callee.name):false;allConstants=isStatelessFilter;argsToWatch=[];forEach(ast.arguments,function(expr){findConstantAndWatchExpressions(expr,$filter);allConstants=allConstants&&expr.constant;if(!expr.constant){argsToWatch.push.apply(argsToWatch,expr.toWatch);}});ast.constant=allConstants;ast.toWatch=isStatelessFilter?argsToWatch:[ast];break;case AST.AssignmentExpression:findConstantAndWatchExpressions(ast.left,$filter);findConstantAndWatchExpressions(ast.right,$filter);ast.constant=ast.left.constant&&ast.right.constant;ast.toWatch=[ast];break;case AST.ArrayExpression:allConstants=true;argsToWatch=[];forEach(ast.elements,function(expr){findConstantAndWatchExpressions(expr,$filter);allConstants=allConstants&&expr.constant;if(!expr.constant){argsToWatch.push.apply(argsToWatch,expr.toWatch);}});ast.constant=allConstants;ast.toWatch=argsToWatch;break;case AST.ObjectExpression:allConstants=true;argsToWatch=[];forEach(ast.properties,function(property){findConstantAndWatchExpressions(property.value,$filter);allConstants=allConstants&&property.value.constant&&!property.computed;if(!property.value.constant){argsToWatch.push.apply(argsToWatch,property.value.toWatch);}if(property.computed){findConstantAndWatchExpressions(property.key,$filter);if(!property.key.constant){argsToWatch.push.apply(argsToWatch,property.key.toWatch);}}});ast.constant=allConstants;ast.toWatch=argsToWatch;break;case AST.ThisExpression:ast.constant=false;ast.toWatch=[];break;case AST.LocalsExpression:ast.constant=false;ast.toWatch=[];break;}}function getInputs(body){if(body.length!==1)return;var lastExpression=body[0].expression;var candidate=lastExpression.toWatch;if(candidate.length!==1)return candidate;return candidate[0]!==lastExpression?candidate:undefined;}function isAssignable(ast){return ast.type===AST.Identifier||ast.type===AST.MemberExpression;}function assignableAST(ast){if(ast.body.length===1&&isAssignable(ast.body[0].expression)){return{type:AST.AssignmentExpression,left:ast.body[0].expression,right:{type:AST.NGValueParameter},operator:'='};}}function isLiteral(ast){return ast.body.length===0||ast.body.length===1&&(ast.body[0].expression.type===AST.Literal||ast.body[0].expression.type===AST.ArrayExpression||ast.body[0].expression.type===AST.ObjectExpression);}function isConstant(ast){return ast.constant;}function ASTCompiler(astBuilder,$filter){this.astBuilder=astBuilder;this.$filter=$filter;}ASTCompiler.prototype={compile:function compile(expression){var self=this;var ast=this.astBuilder.ast(expression);this.state={nextId:0,filters:{},fn:{vars:[],body:[],own:{}},assign:{vars:[],body:[],own:{}},inputs:[]};findConstantAndWatchExpressions(ast,self.$filter);var extra='';var assignable;this.stage='assign';if(assignable=assignableAST(ast)){this.state.computing='assign';var result=this.nextId();this.recurse(assignable,result);this.return_(result);extra='fn.assign='+this.generateFunction('assign','s,v,l');}var toWatch=getInputs(ast.body);self.stage='inputs';forEach(toWatch,function(watch,key){var fnKey='fn'+key;self.state[fnKey]={vars:[],body:[],own:{}};self.state.computing=fnKey;var intoId=self.nextId();self.recurse(watch,intoId);self.return_(intoId);self.state.inputs.push(fnKey);watch.watchId=key;});this.state.computing='fn';this.stage='main';this.recurse(ast);var fnString=// The build and minification steps remove the string "use strict" from the code, but this is done using a regex.
+break;}property={type:AST.Property,kind:'init'};if(this.peek().constant){property.key=this.constant();property.computed=false;this.consume(':');property.value=this.expression();}else if(this.peek().identifier){property.key=this.identifier();property.computed=false;if(this.peek(':')){this.consume(':');property.value=this.expression();}else{property.value=property.key;}}else if(this.peek('[')){this.consume('[');property.key=this.expression();this.consume(']');property.computed=true;this.consume(':');property.value=this.expression();}else{this.throwError('invalid key',this.peek());}properties.push(property);}while(this.expect(','));}this.consume('}');return{type:AST.ObjectExpression,properties:properties};},throwError:function throwError(msg,token){throw $parseMinErr('syntax','Syntax Error: Token \'{0}\' {1} at column {2} of the expression [{3}] starting at [{4}].',token.text,msg,token.index+1,this.text,this.text.substring(token.index));},consume:function consume(e1){if(this.tokens.length===0){throw $parseMinErr('ueoe','Unexpected end of expression: {0}',this.text);}var token=this.expect(e1);if(!token){this.throwError('is unexpected, expecting ['+e1+']',this.peek());}return token;},peekToken:function peekToken(){if(this.tokens.length===0){throw $parseMinErr('ueoe','Unexpected end of expression: {0}',this.text);}return this.tokens[0];},peek:function peek(e1,e2,e3,e4){return this.peekAhead(0,e1,e2,e3,e4);},peekAhead:function peekAhead(i,e1,e2,e3,e4){if(this.tokens.length>i){var token=this.tokens[i];var t=token.text;if(t===e1||t===e2||t===e3||t===e4||!e1&&!e2&&!e3&&!e4){return token;}}return false;},expect:function expect(e1,e2,e3,e4){var token=this.peek(e1,e2,e3,e4);if(token){this.tokens.shift();return token;}return false;},selfReferential:{'this':{type:AST.ThisExpression},'$locals':{type:AST.LocalsExpression}}};function ifDefined(v,d){return typeof v!=='undefined'?v:d;}function plusFn(l,r){if(typeof l==='undefined')return r;if(typeof r==='undefined')return l;return l+r;}function isStateless($filter,filterName){var fn=$filter(filterName);return!fn.$stateful;}function findConstantAndWatchExpressions(ast,$filter){var allConstants;var argsToWatch;var isStatelessFilter;switch(ast.type){case AST.Program:allConstants=true;forEach(ast.body,function(expr){findConstantAndWatchExpressions(expr.expression,$filter);allConstants=allConstants&&expr.expression.constant;});ast.constant=allConstants;break;case AST.Literal:ast.constant=true;ast.toWatch=[];break;case AST.UnaryExpression:findConstantAndWatchExpressions(ast.argument,$filter);ast.constant=ast.argument.constant;ast.toWatch=ast.argument.toWatch;break;case AST.BinaryExpression:findConstantAndWatchExpressions(ast.left,$filter);findConstantAndWatchExpressions(ast.right,$filter);ast.constant=ast.left.constant&&ast.right.constant;ast.toWatch=ast.left.toWatch.concat(ast.right.toWatch);break;case AST.LogicalExpression:findConstantAndWatchExpressions(ast.left,$filter);findConstantAndWatchExpressions(ast.right,$filter);ast.constant=ast.left.constant&&ast.right.constant;ast.toWatch=ast.constant?[]:[ast];break;case AST.ConditionalExpression:findConstantAndWatchExpressions(ast.test,$filter);findConstantAndWatchExpressions(ast.alternate,$filter);findConstantAndWatchExpressions(ast.consequent,$filter);ast.constant=ast.test.constant&&ast.alternate.constant&&ast.consequent.constant;ast.toWatch=ast.constant?[]:[ast];break;case AST.Identifier:ast.constant=false;ast.toWatch=[ast];break;case AST.MemberExpression:findConstantAndWatchExpressions(ast.object,$filter);if(ast.computed){findConstantAndWatchExpressions(ast.property,$filter);}ast.constant=ast.object.constant&&(!ast.computed||ast.property.constant);ast.toWatch=[ast];break;case AST.CallExpression:isStatelessFilter=ast.filter?isStateless($filter,ast.callee.name):false;allConstants=isStatelessFilter;argsToWatch=[];forEach(ast.arguments,function(expr){findConstantAndWatchExpressions(expr,$filter);allConstants=allConstants&&expr.constant;if(!expr.constant){argsToWatch.push.apply(argsToWatch,expr.toWatch);}});ast.constant=allConstants;ast.toWatch=isStatelessFilter?argsToWatch:[ast];break;case AST.AssignmentExpression:findConstantAndWatchExpressions(ast.left,$filter);findConstantAndWatchExpressions(ast.right,$filter);ast.constant=ast.left.constant&&ast.right.constant;ast.toWatch=[ast];break;case AST.ArrayExpression:allConstants=true;argsToWatch=[];forEach(ast.elements,function(expr){findConstantAndWatchExpressions(expr,$filter);allConstants=allConstants&&expr.constant;if(!expr.constant){argsToWatch.push.apply(argsToWatch,expr.toWatch);}});ast.constant=allConstants;ast.toWatch=argsToWatch;break;case AST.ObjectExpression:allConstants=true;argsToWatch=[];forEach(ast.properties,function(property){findConstantAndWatchExpressions(property.value,$filter);allConstants=allConstants&&property.value.constant&&!property.computed;if(!property.value.constant){argsToWatch.push.apply(argsToWatch,property.value.toWatch);}if(property.computed){findConstantAndWatchExpressions(property.key,$filter);if(!property.key.constant){argsToWatch.push.apply(argsToWatch,property.key.toWatch);}}});ast.constant=allConstants;ast.toWatch=argsToWatch;break;case AST.ThisExpression:ast.constant=false;ast.toWatch=[];break;case AST.LocalsExpression:ast.constant=false;ast.toWatch=[];break;}}function getInputs(body){if(body.length!==1)return;var lastExpression=body[0].expression;var candidate=lastExpression.toWatch;if(candidate.length!==1)return candidate;return candidate[0]!==lastExpression?candidate:undefined;}function isAssignable(ast){return ast.type===AST.Identifier||ast.type===AST.MemberExpression;}function assignableAST(ast){if(ast.body.length===1&&isAssignable(ast.body[0].expression)){return{type:AST.AssignmentExpression,left:ast.body[0].expression,right:{type:AST.NGValueParameter},operator:'='};}}function isLiteral(ast){return ast.body.length===0||ast.body.length===1&&(ast.body[0].expression.type===AST.Literal||ast.body[0].expression.type===AST.ArrayExpression||ast.body[0].expression.type===AST.ObjectExpression);}function isConstant(ast){return ast.constant;}function ASTCompiler($filter){this.$filter=$filter;}ASTCompiler.prototype={compile:function compile(ast){var self=this;this.state={nextId:0,filters:{},fn:{vars:[],body:[],own:{}},assign:{vars:[],body:[],own:{}},inputs:[]};findConstantAndWatchExpressions(ast,self.$filter);var extra='';var assignable;this.stage='assign';if(assignable=assignableAST(ast)){this.state.computing='assign';var result=this.nextId();this.recurse(assignable,result);this.return_(result);extra='fn.assign='+this.generateFunction('assign','s,v,l');}var toWatch=getInputs(ast.body);self.stage='inputs';forEach(toWatch,function(watch,key){var fnKey='fn'+key;self.state[fnKey]={vars:[],body:[],own:{}};self.state.computing=fnKey;var intoId=self.nextId();self.recurse(watch,intoId);self.return_(intoId);self.state.inputs.push(fnKey);watch.watchId=key;});this.state.computing='fn';this.stage='main';this.recurse(ast);var fnString=// The build and minification steps remove the string "use strict" from the code, but this is done using a regex.
 // This is a workaround for this until we do a better job at only removing the prefix only when we should.
 '"'+this.USE+' '+this.STRICT+'";\n'+this.filterPrefix()+'var fn='+this.generateFunction('fn','s,l,a,i')+extra+this.watchFns()+'return fn;';// eslint-disable-next-line no-new-func
-var fn=new Function('$filter','getStringValue','ifDefined','plus',fnString)(this.$filter,getStringValue,ifDefined,plusFn);this.state=this.stage=undefined;fn.literal=isLiteral(ast);fn.constant=isConstant(ast);return fn;},USE:'use',STRICT:'strict',watchFns:function watchFns(){var result=[];var fns=this.state.inputs;var self=this;forEach(fns,function(name){result.push('var '+name+'='+self.generateFunction(name,'s'));});if(fns.length){result.push('fn.inputs=['+fns.join(',')+'];');}return result.join('');},generateFunction:function generateFunction(name,params){return'function('+params+'){'+this.varsPrefix(name)+this.body(name)+'};';},filterPrefix:function filterPrefix(){var parts=[];var self=this;forEach(this.state.filters,function(id,filter){parts.push(id+'=$filter('+self.escape(filter)+')');});if(parts.length)return'var '+parts.join(',')+';';return'';},varsPrefix:function varsPrefix(section){return this.state[section].vars.length?'var '+this.state[section].vars.join(',')+';':'';},body:function body(section){return this.state[section].body.join('');},recurse:function recurse(ast,intoId,nameId,recursionFn,create,skipWatchIdCheck){var left,right,self=this,args,expression,computed;recursionFn=recursionFn||noop;if(!skipWatchIdCheck&&isDefined(ast.watchId)){intoId=intoId||this.nextId();this.if_('i',this.lazyAssign(intoId,this.computedMember('i',ast.watchId)),this.lazyRecurse(ast,intoId,nameId,recursionFn,create,true));return;}switch(ast.type){case AST.Program:forEach(ast.body,function(expression,pos){self.recurse(expression.expression,undefined,undefined,function(expr){right=expr;});if(pos!==ast.body.length-1){self.current().body.push(right,';');}else{self.return_(right);}});break;case AST.Literal:expression=this.escape(ast.value);this.assign(intoId,expression);recursionFn(intoId||expression);break;case AST.UnaryExpression:this.recurse(ast.argument,undefined,undefined,function(expr){right=expr;});expression=ast.operator+'('+this.ifDefined(right,0)+')';this.assign(intoId,expression);recursionFn(expression);break;case AST.BinaryExpression:this.recurse(ast.left,undefined,undefined,function(expr){left=expr;});this.recurse(ast.right,undefined,undefined,function(expr){right=expr;});if(ast.operator==='+'){expression=this.plus(left,right);}else if(ast.operator==='-'){expression=this.ifDefined(left,0)+ast.operator+this.ifDefined(right,0);}else{expression='('+left+')'+ast.operator+'('+right+')';}this.assign(intoId,expression);recursionFn(expression);break;case AST.LogicalExpression:intoId=intoId||this.nextId();self.recurse(ast.left,intoId);self.if_(ast.operator==='&&'?intoId:self.not(intoId),self.lazyRecurse(ast.right,intoId));recursionFn(intoId);break;case AST.ConditionalExpression:intoId=intoId||this.nextId();self.recurse(ast.test,intoId);self.if_(intoId,self.lazyRecurse(ast.alternate,intoId),self.lazyRecurse(ast.consequent,intoId));recursionFn(intoId);break;case AST.Identifier:intoId=intoId||this.nextId();if(nameId){nameId.context=self.stage==='inputs'?'s':this.assign(this.nextId(),this.getHasOwnProperty('l',ast.name)+'?l:s');nameId.computed=false;nameId.name=ast.name;}self.if_(self.stage==='inputs'||self.not(self.getHasOwnProperty('l',ast.name)),function(){self.if_(self.stage==='inputs'||'s',function(){if(create&&create!==1){self.if_(self.isNull(self.nonComputedMember('s',ast.name)),self.lazyAssign(self.nonComputedMember('s',ast.name),'{}'));}self.assign(intoId,self.nonComputedMember('s',ast.name));});},intoId&&self.lazyAssign(intoId,self.nonComputedMember('l',ast.name)));recursionFn(intoId);break;case AST.MemberExpression:left=nameId&&(nameId.context=this.nextId())||this.nextId();intoId=intoId||this.nextId();self.recurse(ast.object,left,undefined,function(){self.if_(self.notNull(left),function(){if(ast.computed){right=self.nextId();self.recurse(ast.property,right);self.getStringValue(right);if(create&&create!==1){self.if_(self.not(self.computedMember(left,right)),self.lazyAssign(self.computedMember(left,right),'{}'));}expression=self.computedMember(left,right);self.assign(intoId,expression);if(nameId){nameId.computed=true;nameId.name=right;}}else{if(create&&create!==1){self.if_(self.isNull(self.nonComputedMember(left,ast.property.name)),self.lazyAssign(self.nonComputedMember(left,ast.property.name),'{}'));}expression=self.nonComputedMember(left,ast.property.name);self.assign(intoId,expression);if(nameId){nameId.computed=false;nameId.name=ast.property.name;}}},function(){self.assign(intoId,'undefined');});recursionFn(intoId);},!!create);break;case AST.CallExpression:intoId=intoId||this.nextId();if(ast.filter){right=self.filter(ast.callee.name);args=[];forEach(ast.arguments,function(expr){var argument=self.nextId();self.recurse(expr,argument);args.push(argument);});expression=right+'('+args.join(',')+')';self.assign(intoId,expression);recursionFn(intoId);}else{right=self.nextId();left={};args=[];self.recurse(ast.callee,right,left,function(){self.if_(self.notNull(right),function(){forEach(ast.arguments,function(expr){self.recurse(expr,ast.constant?undefined:self.nextId(),undefined,function(argument){args.push(argument);});});if(left.name){expression=self.member(left.context,left.name,left.computed)+'('+args.join(',')+')';}else{expression=right+'('+args.join(',')+')';}self.assign(intoId,expression);},function(){self.assign(intoId,'undefined');});recursionFn(intoId);});}break;case AST.AssignmentExpression:right=this.nextId();left={};this.recurse(ast.left,undefined,left,function(){self.if_(self.notNull(left.context),function(){self.recurse(ast.right,right);expression=self.member(left.context,left.name,left.computed)+ast.operator+right;self.assign(intoId,expression);recursionFn(intoId||expression);});},1);break;case AST.ArrayExpression:args=[];forEach(ast.elements,function(expr){self.recurse(expr,ast.constant?undefined:self.nextId(),undefined,function(argument){args.push(argument);});});expression='['+args.join(',')+']';this.assign(intoId,expression);recursionFn(intoId||expression);break;case AST.ObjectExpression:args=[];computed=false;forEach(ast.properties,function(property){if(property.computed){computed=true;}});if(computed){intoId=intoId||this.nextId();this.assign(intoId,'{}');forEach(ast.properties,function(property){if(property.computed){left=self.nextId();self.recurse(property.key,left);}else{left=property.key.type===AST.Identifier?property.key.name:''+property.key.value;}right=self.nextId();self.recurse(property.value,right);self.assign(self.member(intoId,left,property.computed),right);});}else{forEach(ast.properties,function(property){self.recurse(property.value,ast.constant?undefined:self.nextId(),undefined,function(expr){args.push(self.escape(property.key.type===AST.Identifier?property.key.name:''+property.key.value)+':'+expr);});});expression='{'+args.join(',')+'}';this.assign(intoId,expression);}recursionFn(intoId||expression);break;case AST.ThisExpression:this.assign(intoId,'s');recursionFn(intoId||'s');break;case AST.LocalsExpression:this.assign(intoId,'l');recursionFn(intoId||'l');break;case AST.NGValueParameter:this.assign(intoId,'v');recursionFn(intoId||'v');break;}},getHasOwnProperty:function getHasOwnProperty(element,property){var key=element+'.'+property;var own=this.current().own;if(!own.hasOwnProperty(key)){own[key]=this.nextId(false,element+'&&('+this.escape(property)+' in '+element+')');}return own[key];},assign:function assign(id,value){if(!id)return;this.current().body.push(id,'=',value,';');return id;},filter:function filter(filterName){if(!this.state.filters.hasOwnProperty(filterName)){this.state.filters[filterName]=this.nextId(true);}return this.state.filters[filterName];},ifDefined:function ifDefined(id,defaultValue){return'ifDefined('+id+','+this.escape(defaultValue)+')';},plus:function plus(left,right){return'plus('+left+','+right+')';},return_:function return_(id){this.current().body.push('return ',id,';');},if_:function if_(test,alternate,consequent){if(test===true){alternate();}else{var body=this.current().body;body.push('if(',test,'){');alternate();body.push('}');if(consequent){body.push('else{');consequent();body.push('}');}}},not:function not(expression){return'!('+expression+')';},isNull:function isNull(expression){return expression+'==null';},notNull:function notNull(expression){return expression+'!=null';},nonComputedMember:function nonComputedMember(left,right){var SAFE_IDENTIFIER=/^[$_a-zA-Z][$_a-zA-Z0-9]*$/;var UNSAFE_CHARACTERS=/[^$_a-zA-Z0-9]/g;if(SAFE_IDENTIFIER.test(right)){return left+'.'+right;}else{return left+'["'+right.replace(UNSAFE_CHARACTERS,this.stringEscapeFn)+'"]';}},computedMember:function computedMember(left,right){return left+'['+right+']';},member:function member(left,right,computed){if(computed)return this.computedMember(left,right);return this.nonComputedMember(left,right);},getStringValue:function getStringValue(item){this.assign(item,'getStringValue('+item+')');},lazyRecurse:function lazyRecurse(ast,intoId,nameId,recursionFn,create,skipWatchIdCheck){var self=this;return function(){self.recurse(ast,intoId,nameId,recursionFn,create,skipWatchIdCheck);};},lazyAssign:function lazyAssign(id,value){var self=this;return function(){self.assign(id,value);};},stringEscapeRegex:/[^ a-zA-Z0-9]/g,stringEscapeFn:function stringEscapeFn(c){return'\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);},escape:function escape(value){if(isString(value))return'\''+value.replace(this.stringEscapeRegex,this.stringEscapeFn)+'\'';if(isNumber(value))return value.toString();if(value===true)return'true';if(value===false)return'false';if(value===null)return'null';if(typeof value==='undefined')return'undefined';throw $parseMinErr('esc','IMPOSSIBLE');},nextId:function nextId(skip,init){var id='v'+this.state.nextId++;if(!skip){this.current().vars.push(id+(init?'='+init:''));}return id;},current:function current(){return this.state[this.state.computing];}};function ASTInterpreter(astBuilder,$filter){this.astBuilder=astBuilder;this.$filter=$filter;}ASTInterpreter.prototype={compile:function compile(expression){var self=this;var ast=this.astBuilder.ast(expression);findConstantAndWatchExpressions(ast,self.$filter);var assignable;var assign;if(assignable=assignableAST(ast)){assign=this.recurse(assignable);}var toWatch=getInputs(ast.body);var inputs;if(toWatch){inputs=[];forEach(toWatch,function(watch,key){var input=self.recurse(watch);watch.input=input;inputs.push(input);watch.watchId=key;});}var expressions=[];forEach(ast.body,function(expression){expressions.push(self.recurse(expression.expression));});var fn=ast.body.length===0?noop:ast.body.length===1?expressions[0]:function(scope,locals){var lastValue;forEach(expressions,function(exp){lastValue=exp(scope,locals);});return lastValue;};if(assign){fn.assign=function(scope,value,locals){return assign(scope,locals,value);};}if(inputs){fn.inputs=inputs;}fn.literal=isLiteral(ast);fn.constant=isConstant(ast);return fn;},recurse:function recurse(ast,context,create){var left,right,self=this,args;if(ast.input){return this.inputs(ast.input,ast.watchId);}switch(ast.type){case AST.Literal:return this.value(ast.value,context);case AST.UnaryExpression:right=this.recurse(ast.argument);return this['unary'+ast.operator](right,context);case AST.BinaryExpression:left=this.recurse(ast.left);right=this.recurse(ast.right);return this['binary'+ast.operator](left,right,context);case AST.LogicalExpression:left=this.recurse(ast.left);right=this.recurse(ast.right);return this['binary'+ast.operator](left,right,context);case AST.ConditionalExpression:return this['ternary?:'](this.recurse(ast.test),this.recurse(ast.alternate),this.recurse(ast.consequent),context);case AST.Identifier:return self.identifier(ast.name,context,create);case AST.MemberExpression:left=this.recurse(ast.object,false,!!create);if(!ast.computed){right=ast.property.name;}if(ast.computed)right=this.recurse(ast.property);return ast.computed?this.computedMember(left,right,context,create):this.nonComputedMember(left,right,context,create);case AST.CallExpression:args=[];forEach(ast.arguments,function(expr){args.push(self.recurse(expr));});if(ast.filter)right=this.$filter(ast.callee.name);if(!ast.filter)right=this.recurse(ast.callee,true);return ast.filter?function(scope,locals,assign,inputs){var values=[];for(var i=0;i<args.length;++i){values.push(args[i](scope,locals,assign,inputs));}var value=right.apply(undefined,values,inputs);return context?{context:undefined,name:undefined,value:value}:value;}:function(scope,locals,assign,inputs){var rhs=right(scope,locals,assign,inputs);var value;if(rhs.value!=null){var values=[];for(var i=0;i<args.length;++i){values.push(args[i](scope,locals,assign,inputs));}value=rhs.value.apply(rhs.context,values);}return context?{value:value}:value;};case AST.AssignmentExpression:left=this.recurse(ast.left,true,1);right=this.recurse(ast.right);return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs=right(scope,locals,assign,inputs);lhs.context[lhs.name]=rhs;return context?{value:rhs}:rhs;};case AST.ArrayExpression:args=[];forEach(ast.elements,function(expr){args.push(self.recurse(expr));});return function(scope,locals,assign,inputs){var value=[];for(var i=0;i<args.length;++i){value.push(args[i](scope,locals,assign,inputs));}return context?{value:value}:value;};case AST.ObjectExpression:args=[];forEach(ast.properties,function(property){if(property.computed){args.push({key:self.recurse(property.key),computed:true,value:self.recurse(property.value)});}else{args.push({key:property.key.type===AST.Identifier?property.key.name:''+property.key.value,computed:false,value:self.recurse(property.value)});}});return function(scope,locals,assign,inputs){var value={};for(var i=0;i<args.length;++i){if(args[i].computed){value[args[i].key(scope,locals,assign,inputs)]=args[i].value(scope,locals,assign,inputs);}else{value[args[i].key]=args[i].value(scope,locals,assign,inputs);}}return context?{value:value}:value;};case AST.ThisExpression:return function(scope){return context?{value:scope}:scope;};case AST.LocalsExpression:return function(scope,locals){return context?{value:locals}:locals;};case AST.NGValueParameter:return function(scope,locals,assign){return context?{value:assign}:assign;};}},'unary+':function unary(argument,context){return function(scope,locals,assign,inputs){var arg=argument(scope,locals,assign,inputs);if(isDefined(arg)){arg=+arg;}else{arg=0;}return context?{value:arg}:arg;};},'unary-':function unary(argument,context){return function(scope,locals,assign,inputs){var arg=argument(scope,locals,assign,inputs);if(isDefined(arg)){arg=-arg;}else{arg=-0;}return context?{value:arg}:arg;};},'unary!':function unary(argument,context){return function(scope,locals,assign,inputs){var arg=!argument(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary+':function binary(left,right,context){return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs=right(scope,locals,assign,inputs);var arg=plusFn(lhs,rhs);return context?{value:arg}:arg;};},'binary-':function binary(left,right,context){return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs=right(scope,locals,assign,inputs);var arg=(isDefined(lhs)?lhs:0)-(isDefined(rhs)?rhs:0);return context?{value:arg}:arg;};},'binary*':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)*right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary/':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)/right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary%':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)%right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary===':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)===right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary!==':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)!==right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary==':function binary(left,right,context){return function(scope,locals,assign,inputs){// eslint-disable-next-line eqeqeq
+var fn=new Function('$filter','getStringValue','ifDefined','plus',fnString)(this.$filter,getStringValue,ifDefined,plusFn);this.state=this.stage=undefined;return fn;},USE:'use',STRICT:'strict',watchFns:function watchFns(){var result=[];var fns=this.state.inputs;var self=this;forEach(fns,function(name){result.push('var '+name+'='+self.generateFunction(name,'s'));});if(fns.length){result.push('fn.inputs=['+fns.join(',')+'];');}return result.join('');},generateFunction:function generateFunction(name,params){return'function('+params+'){'+this.varsPrefix(name)+this.body(name)+'};';},filterPrefix:function filterPrefix(){var parts=[];var self=this;forEach(this.state.filters,function(id,filter){parts.push(id+'=$filter('+self.escape(filter)+')');});if(parts.length)return'var '+parts.join(',')+';';return'';},varsPrefix:function varsPrefix(section){return this.state[section].vars.length?'var '+this.state[section].vars.join(',')+';':'';},body:function body(section){return this.state[section].body.join('');},recurse:function recurse(ast,intoId,nameId,recursionFn,create,skipWatchIdCheck){var left,right,self=this,args,expression,computed;recursionFn=recursionFn||noop;if(!skipWatchIdCheck&&isDefined(ast.watchId)){intoId=intoId||this.nextId();this.if_('i',this.lazyAssign(intoId,this.computedMember('i',ast.watchId)),this.lazyRecurse(ast,intoId,nameId,recursionFn,create,true));return;}switch(ast.type){case AST.Program:forEach(ast.body,function(expression,pos){self.recurse(expression.expression,undefined,undefined,function(expr){right=expr;});if(pos!==ast.body.length-1){self.current().body.push(right,';');}else{self.return_(right);}});break;case AST.Literal:expression=this.escape(ast.value);this.assign(intoId,expression);recursionFn(intoId||expression);break;case AST.UnaryExpression:this.recurse(ast.argument,undefined,undefined,function(expr){right=expr;});expression=ast.operator+'('+this.ifDefined(right,0)+')';this.assign(intoId,expression);recursionFn(expression);break;case AST.BinaryExpression:this.recurse(ast.left,undefined,undefined,function(expr){left=expr;});this.recurse(ast.right,undefined,undefined,function(expr){right=expr;});if(ast.operator==='+'){expression=this.plus(left,right);}else if(ast.operator==='-'){expression=this.ifDefined(left,0)+ast.operator+this.ifDefined(right,0);}else{expression='('+left+')'+ast.operator+'('+right+')';}this.assign(intoId,expression);recursionFn(expression);break;case AST.LogicalExpression:intoId=intoId||this.nextId();self.recurse(ast.left,intoId);self.if_(ast.operator==='&&'?intoId:self.not(intoId),self.lazyRecurse(ast.right,intoId));recursionFn(intoId);break;case AST.ConditionalExpression:intoId=intoId||this.nextId();self.recurse(ast.test,intoId);self.if_(intoId,self.lazyRecurse(ast.alternate,intoId),self.lazyRecurse(ast.consequent,intoId));recursionFn(intoId);break;case AST.Identifier:intoId=intoId||this.nextId();if(nameId){nameId.context=self.stage==='inputs'?'s':this.assign(this.nextId(),this.getHasOwnProperty('l',ast.name)+'?l:s');nameId.computed=false;nameId.name=ast.name;}self.if_(self.stage==='inputs'||self.not(self.getHasOwnProperty('l',ast.name)),function(){self.if_(self.stage==='inputs'||'s',function(){if(create&&create!==1){self.if_(self.isNull(self.nonComputedMember('s',ast.name)),self.lazyAssign(self.nonComputedMember('s',ast.name),'{}'));}self.assign(intoId,self.nonComputedMember('s',ast.name));});},intoId&&self.lazyAssign(intoId,self.nonComputedMember('l',ast.name)));recursionFn(intoId);break;case AST.MemberExpression:left=nameId&&(nameId.context=this.nextId())||this.nextId();intoId=intoId||this.nextId();self.recurse(ast.object,left,undefined,function(){self.if_(self.notNull(left),function(){if(ast.computed){right=self.nextId();self.recurse(ast.property,right);self.getStringValue(right);if(create&&create!==1){self.if_(self.not(self.computedMember(left,right)),self.lazyAssign(self.computedMember(left,right),'{}'));}expression=self.computedMember(left,right);self.assign(intoId,expression);if(nameId){nameId.computed=true;nameId.name=right;}}else{if(create&&create!==1){self.if_(self.isNull(self.nonComputedMember(left,ast.property.name)),self.lazyAssign(self.nonComputedMember(left,ast.property.name),'{}'));}expression=self.nonComputedMember(left,ast.property.name);self.assign(intoId,expression);if(nameId){nameId.computed=false;nameId.name=ast.property.name;}}},function(){self.assign(intoId,'undefined');});recursionFn(intoId);},!!create);break;case AST.CallExpression:intoId=intoId||this.nextId();if(ast.filter){right=self.filter(ast.callee.name);args=[];forEach(ast.arguments,function(expr){var argument=self.nextId();self.recurse(expr,argument);args.push(argument);});expression=right+'('+args.join(',')+')';self.assign(intoId,expression);recursionFn(intoId);}else{right=self.nextId();left={};args=[];self.recurse(ast.callee,right,left,function(){self.if_(self.notNull(right),function(){forEach(ast.arguments,function(expr){self.recurse(expr,ast.constant?undefined:self.nextId(),undefined,function(argument){args.push(argument);});});if(left.name){expression=self.member(left.context,left.name,left.computed)+'('+args.join(',')+')';}else{expression=right+'('+args.join(',')+')';}self.assign(intoId,expression);},function(){self.assign(intoId,'undefined');});recursionFn(intoId);});}break;case AST.AssignmentExpression:right=this.nextId();left={};this.recurse(ast.left,undefined,left,function(){self.if_(self.notNull(left.context),function(){self.recurse(ast.right,right);expression=self.member(left.context,left.name,left.computed)+ast.operator+right;self.assign(intoId,expression);recursionFn(intoId||expression);});},1);break;case AST.ArrayExpression:args=[];forEach(ast.elements,function(expr){self.recurse(expr,ast.constant?undefined:self.nextId(),undefined,function(argument){args.push(argument);});});expression='['+args.join(',')+']';this.assign(intoId,expression);recursionFn(intoId||expression);break;case AST.ObjectExpression:args=[];computed=false;forEach(ast.properties,function(property){if(property.computed){computed=true;}});if(computed){intoId=intoId||this.nextId();this.assign(intoId,'{}');forEach(ast.properties,function(property){if(property.computed){left=self.nextId();self.recurse(property.key,left);}else{left=property.key.type===AST.Identifier?property.key.name:''+property.key.value;}right=self.nextId();self.recurse(property.value,right);self.assign(self.member(intoId,left,property.computed),right);});}else{forEach(ast.properties,function(property){self.recurse(property.value,ast.constant?undefined:self.nextId(),undefined,function(expr){args.push(self.escape(property.key.type===AST.Identifier?property.key.name:''+property.key.value)+':'+expr);});});expression='{'+args.join(',')+'}';this.assign(intoId,expression);}recursionFn(intoId||expression);break;case AST.ThisExpression:this.assign(intoId,'s');recursionFn(intoId||'s');break;case AST.LocalsExpression:this.assign(intoId,'l');recursionFn(intoId||'l');break;case AST.NGValueParameter:this.assign(intoId,'v');recursionFn(intoId||'v');break;}},getHasOwnProperty:function getHasOwnProperty(element,property){var key=element+'.'+property;var own=this.current().own;if(!own.hasOwnProperty(key)){own[key]=this.nextId(false,element+'&&('+this.escape(property)+' in '+element+')');}return own[key];},assign:function assign(id,value){if(!id)return;this.current().body.push(id,'=',value,';');return id;},filter:function filter(filterName){if(!this.state.filters.hasOwnProperty(filterName)){this.state.filters[filterName]=this.nextId(true);}return this.state.filters[filterName];},ifDefined:function ifDefined(id,defaultValue){return'ifDefined('+id+','+this.escape(defaultValue)+')';},plus:function plus(left,right){return'plus('+left+','+right+')';},return_:function return_(id){this.current().body.push('return ',id,';');},if_:function if_(test,alternate,consequent){if(test===true){alternate();}else{var body=this.current().body;body.push('if(',test,'){');alternate();body.push('}');if(consequent){body.push('else{');consequent();body.push('}');}}},not:function not(expression){return'!('+expression+')';},isNull:function isNull(expression){return expression+'==null';},notNull:function notNull(expression){return expression+'!=null';},nonComputedMember:function nonComputedMember(left,right){var SAFE_IDENTIFIER=/^[$_a-zA-Z][$_a-zA-Z0-9]*$/;var UNSAFE_CHARACTERS=/[^$_a-zA-Z0-9]/g;if(SAFE_IDENTIFIER.test(right)){return left+'.'+right;}else{return left+'["'+right.replace(UNSAFE_CHARACTERS,this.stringEscapeFn)+'"]';}},computedMember:function computedMember(left,right){return left+'['+right+']';},member:function member(left,right,computed){if(computed)return this.computedMember(left,right);return this.nonComputedMember(left,right);},getStringValue:function getStringValue(item){this.assign(item,'getStringValue('+item+')');},lazyRecurse:function lazyRecurse(ast,intoId,nameId,recursionFn,create,skipWatchIdCheck){var self=this;return function(){self.recurse(ast,intoId,nameId,recursionFn,create,skipWatchIdCheck);};},lazyAssign:function lazyAssign(id,value){var self=this;return function(){self.assign(id,value);};},stringEscapeRegex:/[^ a-zA-Z0-9]/g,stringEscapeFn:function stringEscapeFn(c){return'\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);},escape:function escape(value){if(isString(value))return'\''+value.replace(this.stringEscapeRegex,this.stringEscapeFn)+'\'';if(isNumber(value))return value.toString();if(value===true)return'true';if(value===false)return'false';if(value===null)return'null';if(typeof value==='undefined')return'undefined';throw $parseMinErr('esc','IMPOSSIBLE');},nextId:function nextId(skip,init){var id='v'+this.state.nextId++;if(!skip){this.current().vars.push(id+(init?'='+init:''));}return id;},current:function current(){return this.state[this.state.computing];}};function ASTInterpreter($filter){this.$filter=$filter;}ASTInterpreter.prototype={compile:function compile(ast){var self=this;findConstantAndWatchExpressions(ast,self.$filter);var assignable;var assign;if(assignable=assignableAST(ast)){assign=this.recurse(assignable);}var toWatch=getInputs(ast.body);var inputs;if(toWatch){inputs=[];forEach(toWatch,function(watch,key){var input=self.recurse(watch);watch.input=input;inputs.push(input);watch.watchId=key;});}var expressions=[];forEach(ast.body,function(expression){expressions.push(self.recurse(expression.expression));});var fn=ast.body.length===0?noop:ast.body.length===1?expressions[0]:function(scope,locals){var lastValue;forEach(expressions,function(exp){lastValue=exp(scope,locals);});return lastValue;};if(assign){fn.assign=function(scope,value,locals){return assign(scope,locals,value);};}if(inputs){fn.inputs=inputs;}return fn;},recurse:function recurse(ast,context,create){var left,right,self=this,args;if(ast.input){return this.inputs(ast.input,ast.watchId);}switch(ast.type){case AST.Literal:return this.value(ast.value,context);case AST.UnaryExpression:right=this.recurse(ast.argument);return this['unary'+ast.operator](right,context);case AST.BinaryExpression:left=this.recurse(ast.left);right=this.recurse(ast.right);return this['binary'+ast.operator](left,right,context);case AST.LogicalExpression:left=this.recurse(ast.left);right=this.recurse(ast.right);return this['binary'+ast.operator](left,right,context);case AST.ConditionalExpression:return this['ternary?:'](this.recurse(ast.test),this.recurse(ast.alternate),this.recurse(ast.consequent),context);case AST.Identifier:return self.identifier(ast.name,context,create);case AST.MemberExpression:left=this.recurse(ast.object,false,!!create);if(!ast.computed){right=ast.property.name;}if(ast.computed)right=this.recurse(ast.property);return ast.computed?this.computedMember(left,right,context,create):this.nonComputedMember(left,right,context,create);case AST.CallExpression:args=[];forEach(ast.arguments,function(expr){args.push(self.recurse(expr));});if(ast.filter)right=this.$filter(ast.callee.name);if(!ast.filter)right=this.recurse(ast.callee,true);return ast.filter?function(scope,locals,assign,inputs){var values=[];for(var i=0;i<args.length;++i){values.push(args[i](scope,locals,assign,inputs));}var value=right.apply(undefined,values,inputs);return context?{context:undefined,name:undefined,value:value}:value;}:function(scope,locals,assign,inputs){var rhs=right(scope,locals,assign,inputs);var value;if(rhs.value!=null){var values=[];for(var i=0;i<args.length;++i){values.push(args[i](scope,locals,assign,inputs));}value=rhs.value.apply(rhs.context,values);}return context?{value:value}:value;};case AST.AssignmentExpression:left=this.recurse(ast.left,true,1);right=this.recurse(ast.right);return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs=right(scope,locals,assign,inputs);lhs.context[lhs.name]=rhs;return context?{value:rhs}:rhs;};case AST.ArrayExpression:args=[];forEach(ast.elements,function(expr){args.push(self.recurse(expr));});return function(scope,locals,assign,inputs){var value=[];for(var i=0;i<args.length;++i){value.push(args[i](scope,locals,assign,inputs));}return context?{value:value}:value;};case AST.ObjectExpression:args=[];forEach(ast.properties,function(property){if(property.computed){args.push({key:self.recurse(property.key),computed:true,value:self.recurse(property.value)});}else{args.push({key:property.key.type===AST.Identifier?property.key.name:''+property.key.value,computed:false,value:self.recurse(property.value)});}});return function(scope,locals,assign,inputs){var value={};for(var i=0;i<args.length;++i){if(args[i].computed){value[args[i].key(scope,locals,assign,inputs)]=args[i].value(scope,locals,assign,inputs);}else{value[args[i].key]=args[i].value(scope,locals,assign,inputs);}}return context?{value:value}:value;};case AST.ThisExpression:return function(scope){return context?{value:scope}:scope;};case AST.LocalsExpression:return function(scope,locals){return context?{value:locals}:locals;};case AST.NGValueParameter:return function(scope,locals,assign){return context?{value:assign}:assign;};}},'unary+':function unary(argument,context){return function(scope,locals,assign,inputs){var arg=argument(scope,locals,assign,inputs);if(isDefined(arg)){arg=+arg;}else{arg=0;}return context?{value:arg}:arg;};},'unary-':function unary(argument,context){return function(scope,locals,assign,inputs){var arg=argument(scope,locals,assign,inputs);if(isDefined(arg)){arg=-arg;}else{arg=-0;}return context?{value:arg}:arg;};},'unary!':function unary(argument,context){return function(scope,locals,assign,inputs){var arg=!argument(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary+':function binary(left,right,context){return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs=right(scope,locals,assign,inputs);var arg=plusFn(lhs,rhs);return context?{value:arg}:arg;};},'binary-':function binary(left,right,context){return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs=right(scope,locals,assign,inputs);var arg=(isDefined(lhs)?lhs:0)-(isDefined(rhs)?rhs:0);return context?{value:arg}:arg;};},'binary*':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)*right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary/':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)/right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary%':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)%right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary===':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)===right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary!==':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)!==right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary==':function binary(left,right,context){return function(scope,locals,assign,inputs){// eslint-disable-next-line eqeqeq
 var arg=left(scope,locals,assign,inputs)==right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary!=':function binary(left,right,context){return function(scope,locals,assign,inputs){// eslint-disable-next-line eqeqeq
 var arg=left(scope,locals,assign,inputs)!=right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary<':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)<right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary>':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)>right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary<=':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)<=right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary>=':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)>=right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary&&':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)&&right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'binary||':function binary(left,right,context){return function(scope,locals,assign,inputs){var arg=left(scope,locals,assign,inputs)||right(scope,locals,assign,inputs);return context?{value:arg}:arg;};},'ternary?:':function ternary(test,alternate,consequent,context){return function(scope,locals,assign,inputs){var arg=test(scope,locals,assign,inputs)?alternate(scope,locals,assign,inputs):consequent(scope,locals,assign,inputs);return context?{value:arg}:arg;};},value:function value(_value2,context){return function(){return context?{context:undefined,name:undefined,value:_value2}:_value2;};},identifier:function identifier(name,context,create){return function(scope,locals,assign,inputs){var base=locals&&name in locals?locals:scope;if(create&&create!==1&&base&&base[name]==null){base[name]={};}var value=base?base[name]:undefined;if(context){return{context:base,name:name,value:value};}else{return value;}};},computedMember:function computedMember(left,right,context,create){return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);var rhs;var value;if(lhs!=null){rhs=right(scope,locals,assign,inputs);rhs=getStringValue(rhs);if(create&&create!==1){if(lhs&&!lhs[rhs]){lhs[rhs]={};}}value=lhs[rhs];}if(context){return{context:lhs,name:rhs,value:value};}else{return value;}};},nonComputedMember:function nonComputedMember(left,right,context,create){return function(scope,locals,assign,inputs){var lhs=left(scope,locals,assign,inputs);if(create&&create!==1){if(lhs&&lhs[right]==null){lhs[right]={};}}var value=lhs!=null?lhs[right]:undefined;if(context){return{context:lhs,name:right,value:value};}else{return value;}};},inputs:function inputs(input,watchId){return function(scope,value,locals,inputs){if(inputs)return inputs[watchId];return input(scope,value,locals);};}};/**
  * @constructor
- */var Parser=function Parser(lexer,$filter,options){this.lexer=lexer;this.$filter=$filter;this.options=options;this.ast=new AST(lexer,options);this.astCompiler=options.csp?new ASTInterpreter(this.ast,$filter):new ASTCompiler(this.ast,$filter);};Parser.prototype={constructor:Parser,parse:function parse(text){return this.astCompiler.compile(text);}};function getValueOf(value){return isFunction(value.valueOf)?value.valueOf():objectValueOf.call(value);}///////////////////////////////////
+ */function Parser(lexer,$filter,options){this.ast=new AST(lexer,options);this.astCompiler=options.csp?new ASTInterpreter($filter):new ASTCompiler($filter);}Parser.prototype={constructor:Parser,parse:function parse(text){var ast=this.ast.ast(text);var fn=this.astCompiler.compile(ast);fn.literal=isLiteral(ast);fn.constant=isConstant(ast);return fn;}};function getValueOf(value){return isFunction(value.valueOf)?value.valueOf():objectValueOf.call(value);}///////////////////////////////////
 /**
  * @ngdoc service
  * @name $parse
@@ -7581,20 +7605,21 @@ var arg=left(scope,locals,assign,inputs)!=right(scope,locals,assign,inputs);retu
   *   a valid identifier start character.
   * @param {function=} identifierContinue The function that will decide whether the given character is
   *   a valid identifier continue character.
-  */this.setIdentifierFns=function(identifierStart,identifierContinue){identStart=identifierStart;identContinue=identifierContinue;return this;};this.$get=['$filter',function($filter){var noUnsafeEval=csp().noUnsafeEval;var $parseOptions={csp:noUnsafeEval,literals:copy(literals),isIdentifierStart:isFunction(identStart)&&identStart,isIdentifierContinue:isFunction(identContinue)&&identContinue};return $parse;function $parse(exp,interceptorFn){var parsedExpression,oneTime,cacheKey;switch(typeof exp==='undefined'?'undefined':_typeof(exp)){case'string':exp=exp.trim();cacheKey=exp;parsedExpression=cache[cacheKey];if(!parsedExpression){if(exp.charAt(0)===':'&&exp.charAt(1)===':'){oneTime=true;exp=exp.substring(2);}var lexer=new Lexer($parseOptions);var parser=new Parser(lexer,$filter,$parseOptions);parsedExpression=parser.parse(exp);if(parsedExpression.constant){parsedExpression.$$watchDelegate=constantWatchDelegate;}else if(oneTime){parsedExpression.$$watchDelegate=parsedExpression.literal?oneTimeLiteralWatchDelegate:oneTimeWatchDelegate;}else if(parsedExpression.inputs){parsedExpression.$$watchDelegate=inputsWatchDelegate;}cache[cacheKey]=parsedExpression;}return addInterceptor(parsedExpression,interceptorFn);case'function':return addInterceptor(exp,interceptorFn);default:return addInterceptor(noop,interceptorFn);}}function expressionInputDirtyCheck(newValue,oldValueOfValue,compareObjectIdentity){if(newValue==null||oldValueOfValue==null){// null/undefined
-return newValue===oldValueOfValue;}if((typeof newValue==='undefined'?'undefined':_typeof(newValue))==='object'&&!compareObjectIdentity){// attempt to convert the value to a primitive type
+  */this.setIdentifierFns=function(identifierStart,identifierContinue){identStart=identifierStart;identContinue=identifierContinue;return this;};this.$get=['$filter',function($filter){var noUnsafeEval=csp().noUnsafeEval;var $parseOptions={csp:noUnsafeEval,literals:copy(literals),isIdentifierStart:isFunction(identStart)&&identStart,isIdentifierContinue:isFunction(identContinue)&&identContinue};return $parse;function $parse(exp,interceptorFn){var parsedExpression,oneTime,cacheKey;switch(typeof exp==='undefined'?'undefined':_typeof(exp)){case'string':exp=exp.trim();cacheKey=exp;parsedExpression=cache[cacheKey];if(!parsedExpression){if(exp.charAt(0)===':'&&exp.charAt(1)===':'){oneTime=true;exp=exp.substring(2);}var lexer=new Lexer($parseOptions);var parser=new Parser(lexer,$filter,$parseOptions);parsedExpression=parser.parse(exp);if(parsedExpression.constant){parsedExpression.$$watchDelegate=constantWatchDelegate;}else if(oneTime){parsedExpression.oneTime=true;parsedExpression.$$watchDelegate=oneTimeWatchDelegate;}else if(parsedExpression.inputs){parsedExpression.$$watchDelegate=inputsWatchDelegate;}cache[cacheKey]=parsedExpression;}return addInterceptor(parsedExpression,interceptorFn);case'function':return addInterceptor(exp,interceptorFn);default:return addInterceptor(noop,interceptorFn);}}function expressionInputDirtyCheck(newValue,oldValueOfValue,compareObjectIdentity){if(newValue==null||oldValueOfValue==null){// null/undefined
+return newValue===oldValueOfValue;}if((typeof newValue==='undefined'?'undefined':_typeof(newValue))==='object'){// attempt to convert the value to a primitive type
 // TODO(docs): add a note to docs that by implementing valueOf even objects and arrays can
 //             be cheaply dirty-checked
-newValue=getValueOf(newValue);if((typeof newValue==='undefined'?'undefined':_typeof(newValue))==='object'){// objects/arrays are not supported - deep-watching them would be too expensive
+newValue=getValueOf(newValue);if((typeof newValue==='undefined'?'undefined':_typeof(newValue))==='object'&&!compareObjectIdentity){// objects/arrays are not supported - deep-watching them would be too expensive
 return false;}// fall-through to the primitive equality check
 }//Primitive or NaN
 // eslint-disable-next-line no-self-compare
 return newValue===oldValueOfValue||newValue!==newValue&&oldValueOfValue!==oldValueOfValue;}function inputsWatchDelegate(scope,listener,objectEquality,parsedExpression,prettyPrintExpression){var inputExpressions=parsedExpression.inputs;var lastResult;if(inputExpressions.length===1){var oldInputValueOf=expressionInputDirtyCheck;// init to something unique so that equals check fails
 inputExpressions=inputExpressions[0];return scope.$watch(function expressionInputWatch(scope){var newInputValue=inputExpressions(scope);if(!expressionInputDirtyCheck(newInputValue,oldInputValueOf,parsedExpression.literal)){lastResult=parsedExpression(scope,undefined,undefined,[newInputValue]);oldInputValueOf=newInputValue&&getValueOf(newInputValue);}return lastResult;},listener,objectEquality,prettyPrintExpression);}var oldInputValueOfValues=[];var oldInputValues=[];for(var i=0,ii=inputExpressions.length;i<ii;i++){oldInputValueOfValues[i]=expressionInputDirtyCheck;// init to something unique so that equals check fails
-oldInputValues[i]=null;}return scope.$watch(function expressionInputsWatch(scope){var changed=false;for(var i=0,ii=inputExpressions.length;i<ii;i++){var newInputValue=inputExpressions[i](scope);if(changed||(changed=!expressionInputDirtyCheck(newInputValue,oldInputValueOfValues[i],parsedExpression.literal))){oldInputValues[i]=newInputValue;oldInputValueOfValues[i]=newInputValue&&getValueOf(newInputValue);}}if(changed){lastResult=parsedExpression(scope,undefined,undefined,oldInputValues);}return lastResult;},listener,objectEquality,prettyPrintExpression);}function oneTimeWatchDelegate(scope,listener,objectEquality,parsedExpression,prettyPrintExpression){var unwatch,lastValue;if(parsedExpression.inputs){unwatch=inputsWatchDelegate(scope,oneTimeListener,objectEquality,parsedExpression,prettyPrintExpression);}else{unwatch=scope.$watch(oneTimeWatch,oneTimeListener,objectEquality);}return unwatch;function oneTimeWatch(scope){return parsedExpression(scope);}function oneTimeListener(value,old,scope){lastValue=value;if(isFunction(listener)){listener(value,old,scope);}if(isDefined(value)){scope.$$postDigest(function(){if(isDefined(lastValue)){unwatch();}});}}}function oneTimeLiteralWatchDelegate(scope,listener,objectEquality,parsedExpression){var unwatch,lastValue;unwatch=scope.$watch(function oneTimeWatch(scope){return parsedExpression(scope);},function oneTimeListener(value,old,scope){lastValue=value;if(isFunction(listener)){listener(value,old,scope);}if(isAllDefined(value)){scope.$$postDigest(function(){if(isAllDefined(lastValue))unwatch();});}},objectEquality);return unwatch;function isAllDefined(value){var allDefined=true;forEach(value,function(val){if(!isDefined(val))allDefined=false;});return allDefined;}}function constantWatchDelegate(scope,listener,objectEquality,parsedExpression){var unwatch=scope.$watch(function constantWatch(scope){unwatch();return parsedExpression(scope);},listener,objectEquality);return unwatch;}function addInterceptor(parsedExpression,interceptorFn){if(!interceptorFn)return parsedExpression;var watchDelegate=parsedExpression.$$watchDelegate;var useInputs=false;var regularWatch=watchDelegate!==oneTimeLiteralWatchDelegate&&watchDelegate!==oneTimeWatchDelegate;var fn=regularWatch?function regularInterceptedExpression(scope,locals,assign,inputs){var value=useInputs&&inputs?inputs[0]:parsedExpression(scope,locals,assign,inputs);return interceptorFn(value,scope,locals);}:function oneTimeInterceptedExpression(scope,locals,assign,inputs){var value=parsedExpression(scope,locals,assign,inputs);var result=interceptorFn(value,scope,locals);// we only return the interceptor's result if the
+oldInputValues[i]=null;}return scope.$watch(function expressionInputsWatch(scope){var changed=false;for(var i=0,ii=inputExpressions.length;i<ii;i++){var newInputValue=inputExpressions[i](scope);if(changed||(changed=!expressionInputDirtyCheck(newInputValue,oldInputValueOfValues[i],parsedExpression.literal))){oldInputValues[i]=newInputValue;oldInputValueOfValues[i]=newInputValue&&getValueOf(newInputValue);}}if(changed){lastResult=parsedExpression(scope,undefined,undefined,oldInputValues);}return lastResult;},listener,objectEquality,prettyPrintExpression);}function oneTimeWatchDelegate(scope,listener,objectEquality,parsedExpression,prettyPrintExpression){var isDone=parsedExpression.literal?isAllDefined:isDefined;var unwatch,lastValue;if(parsedExpression.inputs){unwatch=inputsWatchDelegate(scope,oneTimeListener,objectEquality,parsedExpression,prettyPrintExpression);}else{unwatch=scope.$watch(oneTimeWatch,oneTimeListener,objectEquality);}return unwatch;function oneTimeWatch(scope){return parsedExpression(scope);}function oneTimeListener(value,old,scope){lastValue=value;if(isFunction(listener)){listener(value,old,scope);}if(isDone(value)){scope.$$postDigest(function(){if(isDone(lastValue)){unwatch();}});}}}function isAllDefined(value){var allDefined=true;forEach(value,function(val){if(!isDefined(val))allDefined=false;});return allDefined;}function constantWatchDelegate(scope,listener,objectEquality,parsedExpression){var unwatch=scope.$watch(function constantWatch(scope){unwatch();return parsedExpression(scope);},listener,objectEquality);return unwatch;}function addInterceptor(parsedExpression,interceptorFn){if(!interceptorFn)return parsedExpression;var watchDelegate=parsedExpression.$$watchDelegate;var useInputs=false;var isDone=parsedExpression.literal?isAllDefined:isDefined;function regularInterceptedExpression(scope,locals,assign,inputs){var value=useInputs&&inputs?inputs[0]:parsedExpression(scope,locals,assign,inputs);return interceptorFn(value,scope,locals);}function oneTimeInterceptedExpression(scope,locals,assign,inputs){var value=useInputs&&inputs?inputs[0]:parsedExpression(scope,locals,assign,inputs);var result=interceptorFn(value,scope,locals);// we only return the interceptor's result if the
 // initial value is defined (for bind-once)
-return isDefined(value)?result:value;};// Propagate $$watchDelegates other then inputsWatchDelegate
-useInputs=!parsedExpression.inputs;if(parsedExpression.$$watchDelegate&&parsedExpression.$$watchDelegate!==inputsWatchDelegate){fn.$$watchDelegate=parsedExpression.$$watchDelegate;fn.inputs=parsedExpression.inputs;}else if(!interceptorFn.$stateful){// If there is an interceptor, but no watchDelegate then treat the interceptor like
+return isDone(value)?result:value;}var fn=parsedExpression.oneTime?oneTimeInterceptedExpression:regularInterceptedExpression;// Propogate the literal/oneTime attributes
+fn.literal=parsedExpression.literal;fn.oneTime=parsedExpression.oneTime;// Propagate or create inputs / $$watchDelegates
+useInputs=!parsedExpression.inputs;if(watchDelegate&&watchDelegate!==inputsWatchDelegate){fn.$$watchDelegate=watchDelegate;fn.inputs=parsedExpression.inputs;}else if(!interceptorFn.$stateful){// If there is an interceptor, but no watchDelegate then treat the interceptor like
 // we treat filters - it is assumed to be a pure function unless flagged with $stateful
 fn.$$watchDelegate=inputsWatchDelegate;fn.inputs=parsedExpression.inputs?parsedExpression.inputs:[parsedExpression];}return fn;}}];}/**
  * @ngdoc service
@@ -8685,9 +8710,14 @@ var asyncQueue=$rootScope.$$asyncQueue=[];var postDigestQueue=$rootScope.$$postD
  *  Does the change somehow allow for arbitrary javascript to be executed? *
  *    Or allows for someone to change the prototype of built-in objects?   *
  *     Or gives undesired access to variables likes document or window?    *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *//* exported $SceProvider, $SceDelegateProvider */var $sceMinErr=minErr('$sce');var SCE_CONTEXTS={HTML:'html',CSS:'css',URL:'url',// RESOURCE_URL is a subtype of URL used in contexts where a privileged resource is sourced from a
-// url.  (e.g. ng-include, script src, templateUrl)
-RESOURCE_URL:'resourceUrl',JS:'js'};// Helper functions follow.
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *//* exported $SceProvider, $SceDelegateProvider */var $sceMinErr=minErr('$sce');var SCE_CONTEXTS={// HTML is used when there's HTML rendered (e.g. ng-bind-html, iframe srcdoc binding).
+HTML:'html',// Style statements or stylesheets. Currently unused in AngularJS.
+CSS:'css',// An URL used in a context where it does not refer to a resource that loads code. Currently
+// unused in AngularJS.
+URL:'url',// RESOURCE_URL is a subtype of URL used where the referred-to resource could be interpreted as
+// code. (e.g. ng-include, script src binding, templateUrl)
+RESOURCE_URL:'resourceUrl',// Script. Currently unused in AngularJS.
+JS:'js'};// Helper functions follow.
 var UNDERSCORE_LOWERCASE_REGEXP=/_([a-z])/g;function snakeToCamel(name){return name.replace(UNDERSCORE_LOWERCASE_REGEXP,fnCamelCaseReplace);}function adjustMatcher(matcher){if(matcher==='self'){return matcher;}else if(isString(matcher)){// Strings match exactly except for 2 wildcards - '*' and '**'.
 // '*' matches any character except those from the set ':/.?&'.
 // '**' matches any character (like .* in a RegExp).
@@ -8704,6 +8734,16 @@ return new RegExp('^'+matcher.source+'$');}else{throw $sceMinErr('imatcher','Mat
  *
  * `$sceDelegate` is a service that is used by the `$sce` service to provide {@link ng.$sce Strict
  * Contextual Escaping (SCE)} services to AngularJS.
+ *
+ * For an overview of this service and the functionnality it provides in AngularJS, see the main
+ * page for {@link ng.$sce SCE}. The current page is targeted for developers who need to alter how
+ * SCE works in their application, which shouldn't be needed in most cases.
+ *
+ * <div class="alert alert-danger">
+ * AngularJS strongly relies on contextual escaping for the security of bindings: disabling or
+ * modifying this might cause cross site scripting (XSS) vulnerabilities. For libraries owners,
+ * changes to this service will also influence users, so be extra careful and document your changes.
+ * </div>
  *
  * Typically, you would configure or override the {@link ng.$sceDelegate $sceDelegate} instead of
  * the `$sce` service to customize the way Strict Contextual Escaping works in AngularJS.  This is
@@ -8728,10 +8768,14 @@ return new RegExp('^'+matcher.source+'$');}else{throw $sceMinErr('imatcher','Mat
  * @description
  *
  * The `$sceDelegateProvider` provider allows developers to configure the {@link ng.$sceDelegate
- * $sceDelegate} service.  This allows one to get/set the whitelists and blacklists used to ensure
- * that the URLs used for sourcing Angular templates are safe.  Refer {@link
- * ng.$sceDelegateProvider#resourceUrlWhitelist $sceDelegateProvider.resourceUrlWhitelist} and
- * {@link ng.$sceDelegateProvider#resourceUrlBlacklist $sceDelegateProvider.resourceUrlBlacklist}
+ * $sceDelegate service}, used as a delegate for {@link ng.$sce Strict Contextual Escaping (SCE)}.
+ *
+ * The `$sceDelegateProvider` allows one to get/set the whitelists and blacklists used to ensure
+ * that the URLs used for sourcing AngularJS templates and other script-running URLs are safe (all
+ * places that use the `$sce.RESOURCE_URL` context). See
+ * {@link ng.$sceDelegateProvider#resourceUrlWhitelist $sceDelegateProvider.resourceUrlWhitelist}
+ * and
+ * {@link ng.$sceDelegateProvider#resourceUrlBlacklist $sceDelegateProvider.resourceUrlBlacklist},
  *
  * For the general details about this service in Angular, read the main page for {@link ng.$sce
  * Strict Contextual Escaping (SCE)}.
@@ -8760,6 +8804,13 @@ return new RegExp('^'+matcher.source+'$');}else{throw $sceMinErr('imatcher','Mat
  *    ]);
  *  });
  * ```
+ * Note that an empty whitelist will block every resource URL from being loaded, and will require
+ * you to manually mark each one as trusted with `$sce.trustAsResourceUrl`. However, templates
+ * requested by {@link ng.$templateRequest $templateRequest} that are present in
+ * {@link ng.$templateCache $templateCache} will not go through this check. If you have a mechanism
+ * to populate your templates in that cache at config time, then it is a good idea to remove 'self'
+ * from that whitelist. This helps to mitigate the security impact of certain types of issues, like
+ * for instance attacker-controlled `ng-includes`.
  */function $SceDelegateProvider(){this.SCE_CONTEXTS=SCE_CONTEXTS;// Resource URLs can also be trusted by policy.
 var resourceUrlWhitelist=['self'],resourceUrlBlacklist=[];/**
    * @ngdoc method
@@ -8767,48 +8818,46 @@ var resourceUrlWhitelist=['self'],resourceUrlBlacklist=[];/**
    * @kind function
    *
    * @param {Array=} whitelist When provided, replaces the resourceUrlWhitelist with the value
-   *    provided.  This must be an array or null.  A snapshot of this array is used so further
-   *    changes to the array are ignored.
+   *     provided.  This must be an array or null.  A snapshot of this array is used so further
+   *     changes to the array are ignored.
+   *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
+   *     allowed in this array.
    *
-   *    Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
-   *    allowed in this array.
+   * @return {Array} The currently set whitelist array.
    *
-   *    <div class="alert alert-warning">
-   *    **Note:** an empty whitelist array will block all URLs!
-   *    </div>
-   *
-   * @return {Array} the currently set whitelist array.
+   * @description
+   * Sets/Gets the whitelist of trusted resource URLs.
    *
    * The **default value** when no whitelist has been explicitly set is `['self']` allowing only
    * same origin resource requests.
    *
-   * @description
-   * Sets/Gets the whitelist of trusted resource URLs.
+   * <div class="alert alert-warning">
+   * **Note:** the default whitelist of 'self' is not recommended if your app shares its origin
+   * with other apps! It is a good idea to limit it to only your application's directory.
+   * </div>
    */this.resourceUrlWhitelist=function(value){if(arguments.length){resourceUrlWhitelist=adjustMatchers(value);}return resourceUrlWhitelist;};/**
    * @ngdoc method
    * @name $sceDelegateProvider#resourceUrlBlacklist
    * @kind function
    *
    * @param {Array=} blacklist When provided, replaces the resourceUrlBlacklist with the value
-   *    provided.  This must be an array or null.  A snapshot of this array is used so further
-   *    changes to the array are ignored.
+   *     provided.  This must be an array or null.  A snapshot of this array is used so further
+   *     changes to the array are ignored.</p><p>
+   *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
+   *     allowed in this array.</p><p>
+   *     The typical usage for the blacklist is to **block
+   *     [open redirects](http://cwe.mitre.org/data/definitions/601.html)** served by your domain as
+   *     these would otherwise be trusted but actually return content from the redirected domain.
+   *     </p><p>
+   *     Finally, **the blacklist overrides the whitelist** and has the final say.
    *
-   *    Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
-   *    allowed in this array.
-   *
-   *    The typical usage for the blacklist is to **block
-   *    [open redirects](http://cwe.mitre.org/data/definitions/601.html)** served by your domain as
-   *    these would otherwise be trusted but actually return content from the redirected domain.
-   *
-   *    Finally, **the blacklist overrides the whitelist** and has the final say.
-   *
-   * @return {Array} the currently set blacklist array.
-   *
-   * The **default value** when no whitelist has been explicitly set is the empty array (i.e. there
-   * is no blacklist.)
+   * @return {Array} The currently set blacklist array.
    *
    * @description
    * Sets/Gets the blacklist of trusted resource URLs.
+   *
+   * The **default value** when no whitelist has been explicitly set is the empty array (i.e. there
+   * is no blacklist.)
    */this.resourceUrlBlacklist=function(value){if(arguments.length){resourceUrlBlacklist=adjustMatchers(value);}return resourceUrlBlacklist;};this.$get=['$injector',function($injector){var htmlSanitizer=function htmlSanitizer(html){throw $sceMinErr('unsafe','Attempting to use an unsafe value in a safe context.');};if($injector.has('$sanitize')){htmlSanitizer=$injector.get('$sanitize');}function matchUrl(matcher,parsedUrl){if(matcher==='self'){return urlIsSameOrigin(parsedUrl);}else{// definitely a regex.  See adjustMatchers()
 return!!matcher.exec(parsedUrl.href);}}function isResourceUrlAllowedByPolicy(url){var parsedUrl=urlResolve(url.toString());var i,n,allowed=false;// Ensure that at least one item from the whitelist allows this url.
 for(i=0,n=resourceUrlWhitelist.length;i<n;i++){if(matchUrl(resourceUrlWhitelist[i],parsedUrl)){allowed=true;break;}}if(allowed){// Ensure that no item from the blacklist blocked this url.
@@ -8817,17 +8866,24 @@ for(i=0,n=resourceUrlBlacklist.length;i<n;i++){if(matchUrl(resourceUrlBlacklist[
      * @name $sceDelegate#trustAs
      *
      * @description
-     * Returns an object that is trusted by angular for use in specified strict
-     * contextual escaping contexts (such as ng-bind-html, ng-include, any src
-     * attribute interpolation, any dom event binding attribute interpolation
-     * such as for onclick,  etc.) that uses the provided value.
-     * See {@link ng.$sce $sce} for enabling strict contextual escaping.
+     * Returns a trusted representation of the parameter for the specified context. This trusted
+     * object will later on be used as-is, without any security check, by bindings or directives
+     * that require this security context.
+     * For instance, marking a string as trusted for the `$sce.HTML` context will entirely bypass
+     * the potential `$sanitize` call in corresponding `$sce.HTML` bindings or directives, such as
+     * `ng-bind-html`. Note that in most cases you won't need to call this function: if you have the
+     * sanitizer loaded, passing the value itself will render all the HTML that does not pose a
+     * security risk.
      *
-     * @param {string} type The kind of context in which this value is safe for use.  e.g. url,
-     *   resourceUrl, html, js and css.
-     * @param {*} value The value that that should be considered trusted/safe.
-     * @returns {*} A value that can be used to stand in for the provided `value` in places
-     * where Angular expects a $sce.trustAs() return value.
+     * See {@link ng.$sceDelegate#getTrusted getTrusted} for the function that will consume those
+     * trusted values, and {@link ng.$sce $sce} for general documentation about strict contextual
+     * escaping.
+     *
+     * @param {string} type The context in which this value is safe for use, e.g. `$sce.URL`,
+     *     `$sce.RESOURCE_URL`, `$sce.HTML`, `$sce.JS` or `$sce.CSS`.
+     *
+     * @param {*} value The value that should be considered trusted.
+     * @return {*} A trusted representation of value, that can be used in the given context.
      */function trustAs(type,trustedValue){var Constructor=byType.hasOwnProperty(type)?byType[type]:null;if(!Constructor){throw $sceMinErr('icontext','Attempted to trust a value in invalid context. Context: {0}; Value: {1}',type,trustedValue);}if(trustedValue===null||isUndefined(trustedValue)||trustedValue===''){return trustedValue;}// All the current contexts in SCE_CONTEXTS happen to be strings.  In order to avoid trusting
 // mutable objects, we ensure here that the value passed in is actually a string.
 if(typeof trustedValue!=='string'){throw $sceMinErr('itype','Attempted to trust a non-string value in a content requiring a string: Context: {0}',type);}return new Constructor(trustedValue);}/**
@@ -8840,11 +8896,11 @@ if(typeof trustedValue!=='string'){throw $sceMinErr('itype','Attempted to trust 
      * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}.
      *
      * If the passed parameter is not a value that had been returned by {@link
-     * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}, returns it as-is.
+     * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}, it must be returned as-is.
      *
      * @param {*} value The result of a prior {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}
-     *      call or anything else.
-     * @returns {*} The `value` that was originally provided to {@link ng.$sceDelegate#trustAs
+     *     call or anything else.
+     * @return {*} The `value` that was originally provided to {@link ng.$sceDelegate#trustAs
      *     `$sceDelegate.trustAs`} if `value` is the result of such a call.  Otherwise, returns
      *     `value` unchanged.
      */function valueOf(maybeTrusted){if(maybeTrusted instanceof trustedValueHolderBase){return maybeTrusted.$$unwrapTrustedValue();}else{return maybeTrusted;}}/**
@@ -8852,24 +8908,31 @@ if(typeof trustedValue!=='string'){throw $sceMinErr('itype','Attempted to trust 
      * @name $sceDelegate#getTrusted
      *
      * @description
-     * Takes the result of a {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`} call and
-     * returns the originally supplied value if the queried context type is a supertype of the
-     * created type.  If this condition isn't satisfied, throws an exception.
+     * Takes any input, and either returns a value that's safe to use in the specified context, or
+     * throws an exception.
      *
-     * <div class="alert alert-danger">
-     * Disabling auto-escaping is extremely dangerous, it usually creates a Cross Site Scripting
-     * (XSS) vulnerability in your application.
-     * </div>
+     * In practice, there are several cases. When given a string, this function runs checks
+     * and sanitization to make it safe without prior assumptions. When given the result of a {@link
+     * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`} call, it returns the originally supplied
+     * value if that value's context is valid for this call's context. Finally, this function can
+     * also throw when there is no way to turn `maybeTrusted` in a safe value (e.g., no sanitization
+     * is available or possible.)
      *
-     * @param {string} type The kind of context in which this value is to be used.
+     * @param {string} type The context in which this value is to be used (such as `$sce.HTML`).
      * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs
-     *     `$sceDelegate.trustAs`} call.
-     * @returns {*} The value the was originally provided to {@link ng.$sceDelegate#trustAs
-     *     `$sceDelegate.trustAs`} if valid in this context.  Otherwise, throws an exception.
-     */function getTrusted(type,maybeTrusted){if(maybeTrusted===null||isUndefined(maybeTrusted)||maybeTrusted===''){return maybeTrusted;}var constructor=byType.hasOwnProperty(type)?byType[type]:null;if(constructor&&maybeTrusted instanceof constructor){return maybeTrusted.$$unwrapTrustedValue();}// If we get here, then we may only take one of two actions.
-// 1. sanitize the value for the requested type, or
-// 2. throw an exception.
-if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTrusted)){return maybeTrusted;}else{throw $sceMinErr('insecurl','Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}',maybeTrusted.toString());}}else if(type===SCE_CONTEXTS.HTML){return htmlSanitizer(maybeTrusted);}throw $sceMinErr('unsafe','Attempting to use an unsafe value in a safe context.');}return{trustAs:trustAs,getTrusted:getTrusted,valueOf:valueOf};}];}/**
+     *     `$sceDelegate.trustAs`} call, or anything else (which will not be considered trusted.)
+     * @return {*} A version of the value that's safe to use in the given context, or throws an
+     *     exception if this is impossible.
+     */function getTrusted(type,maybeTrusted){if(maybeTrusted===null||isUndefined(maybeTrusted)||maybeTrusted===''){return maybeTrusted;}var constructor=byType.hasOwnProperty(type)?byType[type]:null;// If maybeTrusted is a trusted class instance or subclass instance, then unwrap and return
+// as-is.
+if(constructor&&maybeTrusted instanceof constructor){return maybeTrusted.$$unwrapTrustedValue();}// Otherwise, if we get here, then we may either make it safe, or throw an exception. This
+// depends on the context: some are sanitizatible (HTML), some use whitelists (RESOURCE_URL),
+// some are impossible to do (JS). This step isn't implemented for CSS and URL, as AngularJS
+// has no corresponding sinks.
+if(type===SCE_CONTEXTS.RESOURCE_URL){// RESOURCE_URL uses a whitelist.
+if(isResourceUrlAllowedByPolicy(maybeTrusted)){return maybeTrusted;}else{throw $sceMinErr('insecurl','Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}',maybeTrusted.toString());}}else if(type===SCE_CONTEXTS.HTML){// htmlSanitizer throws its own error when no sanitizer is available.
+return htmlSanitizer(maybeTrusted);}// Default error when the $sce service has no way to make the input safe.
+throw $sceMinErr('unsafe','Attempting to use an unsafe value in a safe context.');}return{trustAs:trustAs,getTrusted:getTrusted,valueOf:valueOf};}];}/**
  * @ngdoc provider
  * @name $sceProvider
  * @this
@@ -8892,21 +8955,27 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
  *
  * # Strict Contextual Escaping
  *
- * Strict Contextual Escaping (SCE) is a mode in which AngularJS requires bindings in certain
- * contexts to result in a value that is marked as safe to use for that context.  One example of
- * such a context is binding arbitrary html controlled by the user via `ng-bind-html`.  We refer
- * to these contexts as privileged or SCE contexts.
+ * Strict Contextual Escaping (SCE) is a mode in which AngularJS constrains bindings to only render
+ * trusted values. Its goal is to assist in writing code in a way that (a) is secure by default, and
+ * (b) makes auditing for security vulnerabilities such as XSS, clickjacking, etc. a lot easier.
  *
- * As of version 1.2, Angular ships with SCE enabled by default.
+ * ## Overview
  *
- * Note:  When enabled (the default), IE<11 in quirks mode is not supported.  In this mode, IE<11 allow
- * one to execute arbitrary javascript by the use of the expression() syntax.  Refer
- * <http://blogs.msdn.com/b/ie/archive/2008/10/16/ending-expressions.aspx> to learn more about them.
- * You can ensure your document is in standards mode and not quirks mode by adding `<!doctype html>`
- * to the top of your HTML document.
+ * To systematically block XSS security bugs, AngularJS treats all values as untrusted by default in
+ * HTML or sensitive URL bindings. When binding untrusted values, AngularJS will automatically
+ * run security checks on them (sanitizations, whitelists, depending on context), or throw when it
+ * cannot guarantee the security of the result. That behavior depends strongly on contexts: HTML
+ * can be sanitized, but template URLs cannot, for instance.
  *
- * SCE assists in writing code in a way that (a) is secure by default and (b) makes auditing for
- * security vulnerabilities such as XSS, clickjacking, etc. a lot easier.
+ * To illustrate this, consider the `ng-bind-html` directive. It renders its value directly as HTML:
+ * we call that the *context*. When given an untrusted input, AngularJS will attempt to sanitize it
+ * before rendering if a sanitizer is available, and throw otherwise. To bypass sanitization and
+ * render the input as-is, you will need to mark it as trusted for that context before attempting
+ * to bind it.
+ *
+ * As of version 1.2, AngularJS ships with SCE enabled by default.
+ *
+ * ## In practice
  *
  * Here's an example of a binding in a privileged context:
  *
@@ -8916,10 +8985,10 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
  * ```
  *
  * Notice that `ng-bind-html` is bound to `userHtml` controlled by the user.  With SCE
- * disabled, this application allows the user to render arbitrary HTML into the DIV.
- * In a more realistic example, one may be rendering user comments, blog articles, etc. via
- * bindings.  (HTML is just one example of a context where rendering user controlled input creates
- * security vulnerabilities.)
+ * disabled, this application allows the user to render arbitrary HTML into the DIV, which would
+ * be an XSS security bug. In a more realistic example, one may be rendering user comments, blog
+ * articles, etc. via bindings. (HTML is just one example of a context where rendering user
+ * controlled input creates security vulnerabilities.)
  *
  * For the case of HTML, you might use a library, either on the client side, or on the server side,
  * to sanitize unsafe HTML before binding to the value and rendering it in the document.
@@ -8929,25 +8998,29 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
  * ensure that you didn't accidentally delete the line that sanitized the value, or renamed some
  * properties/fields and forgot to update the binding to the sanitized value?
  *
- * To be secure by default, you want to ensure that any such bindings are disallowed unless you can
- * determine that something explicitly says it's safe to use a value for binding in that
- * context.  You can then audit your code (a simple grep would do) to ensure that this is only done
- * for those values that you can easily tell are safe - because they were received from your server,
- * sanitized by your library, etc.  You can organize your codebase to help with this - perhaps
- * allowing only the files in a specific directory to do this.  Ensuring that the internal API
- * exposed by that code doesn't markup arbitrary values as safe then becomes a more manageable task.
+ * To be secure by default, AngularJS makes sure bindings go through that sanitization, or
+ * any similar validation process, unless there's a good reason to trust the given value in this
+ * context.  That trust is formalized with a function call. This means that as a developer, you
+ * can assume all untrusted bindings are safe. Then, to audit your code for binding security issues,
+ * you just need to ensure the values you mark as trusted indeed are safe - because they were
+ * received from your server, sanitized by your library, etc. You can organize your codebase to
+ * help with this - perhaps allowing only the files in a specific directory to do this.
+ * Ensuring that the internal API exposed by that code doesn't markup arbitrary values as safe then
+ * becomes a more manageable task.
  *
  * In the case of AngularJS' SCE service, one uses {@link ng.$sce#trustAs $sce.trustAs}
  * (and shorthand methods such as {@link ng.$sce#trustAsHtml $sce.trustAsHtml}, etc.) to
- * obtain values that will be accepted by SCE / privileged contexts.
- *
+ * build the trusted versions of your values.
  *
  * ## How does it work?
  *
  * In privileged contexts, directives and code will bind to the result of {@link ng.$sce#getTrusted
- * $sce.getTrusted(context, value)} rather than to the value directly.  Directives use {@link
- * ng.$sce#parseAs $sce.parseAs} rather than `$parse` to watch attribute bindings, which performs the
- * {@link ng.$sce#getTrusted $sce.getTrusted} behind the scenes on non-constant literals.
+ * $sce.getTrusted(context, value)} rather than to the value directly.  Think of this function as
+ * a way to enforce the required security context in your data sink. Directives use {@link
+ * ng.$sce#parseAs $sce.parseAs} rather than `$parse` to watch attribute bindings, which performs
+ * the {@link ng.$sce#getTrusted $sce.getTrusted} behind the scenes on non-constant literals. Also,
+ * when binding without directives, AngularJS will understand the context of your bindings
+ * automatically.
  *
  * As an example, {@link ng.directive:ngBindHtml ngBindHtml} uses {@link
  * ng.$sce#parseAsHtml $sce.parseAsHtml(binding expression)}.  Here's the actual code (slightly
@@ -8988,11 +9061,12 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
  * It's important to remember that SCE only applies to interpolation expressions.
  *
  * If your expressions are constant literals, they're automatically trusted and you don't need to
- * call `$sce.trustAs` on them (remember to include the `ngSanitize` module) (e.g.
- * `<div ng-bind-html="'<b>implicitly trusted</b>'"></div>`) just works.
- *
- * Additionally, `a[href]` and `img[src]` automatically sanitize their URLs and do not pass them
- * through {@link ng.$sce#getTrusted $sce.getTrusted}.  SCE doesn't play a role here.
+ * call `$sce.trustAs` on them (e.g.
+ * `<div ng-bind-html="'<b>implicitly trusted</b>'"></div>`) just works. The `$sceDelegate` will
+ * also use the `$sanitize` service if it is available when binding untrusted values to
+ * `$sce.HTML` context. AngularJS provides an implementation in `angular-sanitize.js`, and if you
+ * wish to use it, you will also need to depend on the {@link ngSanitize `ngSanitize`} module in
+ * your application.
  *
  * The included {@link ng.$sceDelegate $sceDelegate} comes with sane defaults to allow you to load
  * templates in `ng-include` from your application's domain without having to even know about SCE.
@@ -9010,11 +9084,17 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
  *
  * | Context             | Notes          |
  * |---------------------|----------------|
- * | `$sce.HTML`         | For HTML that's safe to source into the application.  The {@link ng.directive:ngBindHtml ngBindHtml} directive uses this context for bindings. If an unsafe value is encountered and the {@link ngSanitize $sanitize} module is present this will sanitize the value instead of throwing an error. |
- * | `$sce.CSS`          | For CSS that's safe to source into the application.  Currently unused.  Feel free to use it in your own directives. |
- * | `$sce.URL`          | For URLs that are safe to follow as links.  Currently unused (`<a href=` and `<img src=` sanitize their urls and don't constitute an SCE context. |
- * | `$sce.RESOURCE_URL` | For URLs that are not only safe to follow as links, but whose contents are also safe to include in your application.  Examples include `ng-include`, `src` / `ngSrc` bindings for tags other than `IMG`, `VIDEO`, `AUDIO`, `SOURCE`, and `TRACK` (e.g. `IFRAME`, `OBJECT`, etc.)  <br><br>Note that `$sce.RESOURCE_URL` makes a stronger statement about the URL than `$sce.URL` does and therefore contexts requiring values trusted for `$sce.RESOURCE_URL` can be used anywhere that values trusted for `$sce.URL` are required. |
- * | `$sce.JS`           | For JavaScript that is safe to execute in your application's context.  Currently unused.  Feel free to use it in your own directives. |
+ * | `$sce.HTML`         | For HTML that's safe to source into the application.  The {@link ng.directive:ngBindHtml ngBindHtml} directive uses this context for bindings. If an unsafe value is encountered, and the {@link ngSanitize.$sanitize $sanitize} service is available (implemented by the {@link ngSanitize ngSanitize} module) this will sanitize the value instead of throwing an error. |
+ * | `$sce.CSS`          | For CSS that's safe to source into the application.  Currently, no bindings require this context. Feel free to use it in your own directives. |
+ * | `$sce.URL`          | For URLs that are safe to follow as links.  Currently unused (`<a href=`, `<img src=`, and some others sanitize their urls and don't constitute an SCE context.) |
+ * | `$sce.RESOURCE_URL` | For URLs that are not only safe to follow as links, but whose contents are also safe to include in your application.  Examples include `ng-include`, `src` / `ngSrc` bindings for tags other than `IMG`, `VIDEO`, `AUDIO`, `SOURCE`, and `TRACK` (e.g. `IFRAME`, `OBJECT`, etc.)  <br><br>Note that `$sce.RESOURCE_URL` makes a stronger statement about the URL than `$sce.URL` does (it's not just the URL that matters, but also what is at the end of it), and therefore contexts requiring values trusted for `$sce.RESOURCE_URL` can be used anywhere that values trusted for `$sce.URL` are required. |
+ * | `$sce.JS`           | For JavaScript that is safe to execute in your application's context.  Currently, no bindings require this context.  Feel free to use it in your own directives. |
+ *
+ *
+ * Be aware that `a[href]` and `img[src]` automatically sanitize their URLs and do not pass them
+ * through {@link ng.$sce#getTrusted $sce.getTrusted}. There's no CSS-, URL-, or JS-context bindings
+ * in AngularJS currently, so their corresponding `$sce.trustAs` functions aren't useful yet. This
+ * might evolve.
  *
  * ## Format of items in {@link ng.$sceDelegateProvider#resourceUrlWhitelist resourceUrlWhitelist}/{@link ng.$sceDelegateProvider#resourceUrlBlacklist Blacklist} <a name="resourceUrlPatternItem"></a>
  *
@@ -9133,14 +9213,15 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
  * for little coding overhead.  It will be much harder to take an SCE disabled application and
  * either secure it on your own or enable SCE at a later stage.  It might make sense to disable SCE
  * for cases where you have a lot of existing code that was written before SCE was introduced and
- * you're migrating them a module at a time.
+ * you're migrating them a module at a time. Also do note that this is an app-wide setting, so if
+ * you are writing a library, you will cause security bugs applications using it.
  *
  * That said, here's how you can completely disable SCE:
  *
  * ```
  * angular.module('myAppWithSceDisabledmyApp', []).config(function($sceProvider) {
  *   // Completely disable SCE.  For demonstration purposes only!
- *   // Do not use in new projects.
+ *   // Do not use in new projects or libraries.
  *   $sceProvider.enabled(false);
  * });
  * ```
@@ -9150,8 +9231,8 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
    * @name $sceProvider#enabled
    * @kind function
    *
-   * @param {boolean=} value If provided, then enables/disables SCE.
-   * @return {boolean} true if SCE is enabled, false otherwise.
+   * @param {boolean=} value If provided, then enables/disables SCE application-wide.
+   * @return {boolean} True if SCE is enabled, false otherwise.
    *
    * @description
    * Enables/disables SCE and returns the current value.
@@ -9196,9 +9277,9 @@ if(type===SCE_CONTEXTS.RESOURCE_URL){if(isResourceUrlAllowedByPolicy(maybeTruste
    *     getTrusted($sce.RESOURCE_URL, value) succeeding implies that getTrusted($sce.URL, value)
    *     will also succeed.
    *
-   * Inheritance happens to capture this in a natural way.  In some future, we
-   * may not use inheritance anymore.  That is OK because no code outside of
-   * sce.js and sceSpecs.js would need to be aware of this detail.
+   * Inheritance happens to capture this in a natural way. In some future, we may not use
+   * inheritance anymore. That is OK because no code outside of sce.js and sceSpecs.js would need to
+   * be aware of this detail.
    */this.$get=['$parse','$sceDelegate',function($parse,$sceDelegate){// Support: IE 9-11 only
 // Prereq: Ensure that we're not running in IE<11 quirks mode.  In that mode, IE < 11 allow
 // the "expression(javascript expression)" syntax which is insecure.
@@ -9207,8 +9288,8 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      * @name $sce#isEnabled
      * @kind function
      *
-     * @return {Boolean} true if SCE is enabled, false otherwise.  If you want to set the value, you
-     * have to do it at module config time on {@link ng.$sceProvider $sceProvider}.
+     * @return {Boolean} True if SCE is enabled, false otherwise.  If you want to set the value, you
+     *     have to do it at module config time on {@link ng.$sceProvider $sceProvider}.
      *
      * @description
      * Returns a boolean indicating if SCE is enabled.
@@ -9222,31 +9303,31 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      * wraps the expression in a call to {@link ng.$sce#getTrusted $sce.getTrusted(*type*,
      * *result*)}
      *
-     * @param {string} type The kind of SCE context in which this result will be used.
+     * @param {string} type The SCE context in which this result will be used.
      * @param {string} expression String expression to compile.
-     * @returns {function(context, locals)} a function which represents the compiled expression:
+     * @return {function(context, locals)} A function which represents the compiled expression:
      *
-     *    * `context` – `{object}` – an object against which any expressions embedded in the strings
-     *      are evaluated against (typically a scope object).
-     *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
-     *      `context`.
+     *    * `context` – `{object}` – an object against which any expressions embedded in the
+     *      strings are evaluated against (typically a scope object).
+     *    * `locals` – `{object=}` – local variables context object, useful for overriding values
+     *      in `context`.
      */sce.parseAs=function sceParseAs(type,expr){var parsed=$parse(expr);if(parsed.literal&&parsed.constant){return parsed;}else{return $parse(expr,function(value){return sce.getTrusted(type,value);});}};/**
      * @ngdoc method
      * @name $sce#trustAs
      *
      * @description
-     * Delegates to {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}.  As such,
-     * returns an object that is trusted by angular for use in specified strict contextual
-     * escaping contexts (such as ng-bind-html, ng-include, any src attribute
-     * interpolation, any dom event binding attribute interpolation such as for onclick,  etc.)
-     * that uses the provided value.  See * {@link ng.$sce $sce} for enabling strict contextual
-     * escaping.
+     * Delegates to {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}. As such, returns a
+     * wrapped object that represents your value, and the trust you have in its safety for the given
+     * context. AngularJS can then use that value as-is in bindings of the specified secure context.
+     * This is used in bindings for `ng-bind-html`, `ng-include`, and most `src` attribute
+     * interpolations. See {@link ng.$sce $sce} for strict contextual escaping.
      *
-     * @param {string} type The kind of context in which this value is safe for use.  e.g. url,
-     *   resourceUrl, html, js and css.
-     * @param {*} value The value that that should be considered trusted/safe.
-     * @returns {*} A value that can be used to stand in for the provided `value` in places
-     * where Angular expects a $sce.trustAs() return value.
+     * @param {string} type The context in which this value is safe for use, e.g. `$sce.URL`,
+     *     `$sce.RESOURCE_URL`, `$sce.HTML`, `$sce.JS` or `$sce.CSS`.
+     *
+     * @param {*} value The value that that should be considered trusted.
+     * @return {*} A wrapped version of value that can be used as a trusted variant of your `value`
+     *     in the context you specified.
      *//**
      * @ngdoc method
      * @name $sce#trustAsHtml
@@ -9255,11 +9336,21 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      * Shorthand method.  `$sce.trustAsHtml(value)` →
      *     {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs($sce.HTML, value)`}
      *
-     * @param {*} value The value to trustAs.
-     * @returns {*} An object that can be passed to {@link ng.$sce#getTrustedHtml
-     *     $sce.getTrustedHtml(value)} to obtain the original value.  (privileged directives
-     *     only accept expressions that are either literal constants or are the
-     *     return value of {@link ng.$sce#trustAs $sce.trustAs}.)
+     * @param {*} value The value to mark as trusted for `$sce.HTML` context.
+     * @return {*} A wrapped version of value that can be used as a trusted variant of your `value`
+     *     in `$sce.HTML` context (like `ng-bind-html`).
+     *//**
+     * @ngdoc method
+     * @name $sce#trustAsCss
+     *
+     * @description
+     * Shorthand method.  `$sce.trustAsCss(value)` →
+     *     {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs($sce.CSS, value)`}
+     *
+     * @param {*} value The value to mark as trusted for `$sce.CSS` context.
+     * @return {*} A wrapped version of value that can be used as a trusted variant
+     *     of your `value` in `$sce.CSS` context. This context is currently unused, so there are
+     *     almost no reasons to use this function so far.
      *//**
      * @ngdoc method
      * @name $sce#trustAsUrl
@@ -9268,11 +9359,10 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      * Shorthand method.  `$sce.trustAsUrl(value)` →
      *     {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs($sce.URL, value)`}
      *
-     * @param {*} value The value to trustAs.
-     * @returns {*} An object that can be passed to {@link ng.$sce#getTrustedUrl
-     *     $sce.getTrustedUrl(value)} to obtain the original value.  (privileged directives
-     *     only accept expressions that are either literal constants or are the
-     *     return value of {@link ng.$sce#trustAs $sce.trustAs}.)
+     * @param {*} value The value to mark as trusted for `$sce.URL` context.
+     * @return {*} A wrapped version of value that can be used as a trusted variant of your `value`
+     *     in `$sce.URL` context. That context is currently unused, so there are almost no reasons
+     *     to use this function so far.
      *//**
      * @ngdoc method
      * @name $sce#trustAsResourceUrl
@@ -9281,11 +9371,10 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      * Shorthand method.  `$sce.trustAsResourceUrl(value)` →
      *     {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs($sce.RESOURCE_URL, value)`}
      *
-     * @param {*} value The value to trustAs.
-     * @returns {*} An object that can be passed to {@link ng.$sce#getTrustedResourceUrl
-     *     $sce.getTrustedResourceUrl(value)} to obtain the original value.  (privileged directives
-     *     only accept expressions that are either literal constants or are the return
-     *     value of {@link ng.$sce#trustAs $sce.trustAs}.)
+     * @param {*} value The value to mark as trusted for `$sce.RESOURCE_URL` context.
+     * @return {*} A wrapped version of value that can be used as a trusted variant of your `value`
+     *     in `$sce.RESOURCE_URL` context (template URLs in `ng-include`, most `src` attribute
+     *     bindings, ...)
      *//**
      * @ngdoc method
      * @name $sce#trustAsJs
@@ -9294,27 +9383,27 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      * Shorthand method.  `$sce.trustAsJs(value)` →
      *     {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs($sce.JS, value)`}
      *
-     * @param {*} value The value to trustAs.
-     * @returns {*} An object that can be passed to {@link ng.$sce#getTrustedJs
-     *     $sce.getTrustedJs(value)} to obtain the original value.  (privileged directives
-     *     only accept expressions that are either literal constants or are the
-     *     return value of {@link ng.$sce#trustAs $sce.trustAs}.)
+     * @param {*} value The value to mark as trusted for `$sce.JS` context.
+     * @return {*} A wrapped version of value that can be used as a trusted variant of your `value`
+     *     in `$sce.JS` context. That context is currently unused, so there are almost no reasons to
+     *     use this function so far.
      *//**
      * @ngdoc method
      * @name $sce#getTrusted
      *
      * @description
      * Delegates to {@link ng.$sceDelegate#getTrusted `$sceDelegate.getTrusted`}.  As such,
-     * takes the result of a {@link ng.$sce#trustAs `$sce.trustAs`}() call and returns the
-     * originally supplied value if the queried context type is a supertype of the created type.
-     * If this condition isn't satisfied, throws an exception.
+     * takes any input, and either returns a value that's safe to use in the specified context,
+     * or throws an exception. This function is aware of trusted values created by the `trustAs`
+     * function and its shorthands, and when contexts are appropriate, returns the unwrapped value
+     * as-is. Finally, this function can also throw when there is no way to turn `maybeTrusted` in a
+     * safe value (e.g., no sanitization is available or possible.)
      *
-     * @param {string} type The kind of context in which this value is to be used.
-     * @param {*} maybeTrusted The result of a prior {@link ng.$sce#trustAs `$sce.trustAs`}
-     *                         call.
-     * @returns {*} The value the was originally provided to
-     *              {@link ng.$sce#trustAs `$sce.trustAs`} if valid in this context.
-     *              Otherwise, throws an exception.
+     * @param {string} type The context in which this value is to be used.
+     * @param {*} maybeTrusted The result of a prior {@link ng.$sce#trustAs
+     *     `$sce.trustAs`} call, or anything else (which will not be considered trusted.)
+     * @return {*} A version of the value that's safe to use in the given context, or throws an
+     *     exception if this is impossible.
      *//**
      * @ngdoc method
      * @name $sce#getTrustedHtml
@@ -9324,7 +9413,7 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sceDelegate#getTrusted `$sceDelegate.getTrusted($sce.HTML, value)`}
      *
      * @param {*} value The value to pass to `$sce.getTrusted`.
-     * @returns {*} The return value of `$sce.getTrusted($sce.HTML, value)`
+     * @return {*} The return value of `$sce.getTrusted($sce.HTML, value)`
      *//**
      * @ngdoc method
      * @name $sce#getTrustedCss
@@ -9334,7 +9423,7 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sceDelegate#getTrusted `$sceDelegate.getTrusted($sce.CSS, value)`}
      *
      * @param {*} value The value to pass to `$sce.getTrusted`.
-     * @returns {*} The return value of `$sce.getTrusted($sce.CSS, value)`
+     * @return {*} The return value of `$sce.getTrusted($sce.CSS, value)`
      *//**
      * @ngdoc method
      * @name $sce#getTrustedUrl
@@ -9344,7 +9433,7 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sceDelegate#getTrusted `$sceDelegate.getTrusted($sce.URL, value)`}
      *
      * @param {*} value The value to pass to `$sce.getTrusted`.
-     * @returns {*} The return value of `$sce.getTrusted($sce.URL, value)`
+     * @return {*} The return value of `$sce.getTrusted($sce.URL, value)`
      *//**
      * @ngdoc method
      * @name $sce#getTrustedResourceUrl
@@ -9354,7 +9443,7 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sceDelegate#getTrusted `$sceDelegate.getTrusted($sce.RESOURCE_URL, value)`}
      *
      * @param {*} value The value to pass to `$sceDelegate.getTrusted`.
-     * @returns {*} The return value of `$sce.getTrusted($sce.RESOURCE_URL, value)`
+     * @return {*} The return value of `$sce.getTrusted($sce.RESOURCE_URL, value)`
      *//**
      * @ngdoc method
      * @name $sce#getTrustedJs
@@ -9364,7 +9453,7 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sceDelegate#getTrusted `$sceDelegate.getTrusted($sce.JS, value)`}
      *
      * @param {*} value The value to pass to `$sce.getTrusted`.
-     * @returns {*} The return value of `$sce.getTrusted($sce.JS, value)`
+     * @return {*} The return value of `$sce.getTrusted($sce.JS, value)`
      *//**
      * @ngdoc method
      * @name $sce#parseAsHtml
@@ -9374,12 +9463,12 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sce#parseAs `$sce.parseAs($sce.HTML, value)`}
      *
      * @param {string} expression String expression to compile.
-     * @returns {function(context, locals)} a function which represents the compiled expression:
+     * @return {function(context, locals)} A function which represents the compiled expression:
      *
-     *    * `context` – `{object}` – an object against which any expressions embedded in the strings
-     *      are evaluated against (typically a scope object).
-     *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
-     *      `context`.
+     *    * `context` – `{object}` – an object against which any expressions embedded in the
+     *      strings are evaluated against (typically a scope object).
+     *    * `locals` – `{object=}` – local variables context object, useful for overriding values
+     *      in `context`.
      *//**
      * @ngdoc method
      * @name $sce#parseAsCss
@@ -9389,12 +9478,12 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sce#parseAs `$sce.parseAs($sce.CSS, value)`}
      *
      * @param {string} expression String expression to compile.
-     * @returns {function(context, locals)} a function which represents the compiled expression:
+     * @return {function(context, locals)} A function which represents the compiled expression:
      *
-     *    * `context` – `{object}` – an object against which any expressions embedded in the strings
-     *      are evaluated against (typically a scope object).
-     *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
-     *      `context`.
+     *    * `context` – `{object}` – an object against which any expressions embedded in the
+     *      strings are evaluated against (typically a scope object).
+     *    * `locals` – `{object=}` – local variables context object, useful for overriding values
+     *      in `context`.
      *//**
      * @ngdoc method
      * @name $sce#parseAsUrl
@@ -9404,12 +9493,12 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sce#parseAs `$sce.parseAs($sce.URL, value)`}
      *
      * @param {string} expression String expression to compile.
-     * @returns {function(context, locals)} a function which represents the compiled expression:
+     * @return {function(context, locals)} A function which represents the compiled expression:
      *
-     *    * `context` – `{object}` – an object against which any expressions embedded in the strings
-     *      are evaluated against (typically a scope object).
-     *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
-     *      `context`.
+     *    * `context` – `{object}` – an object against which any expressions embedded in the
+     *      strings are evaluated against (typically a scope object).
+     *    * `locals` – `{object=}` – local variables context object, useful for overriding values
+     *      in `context`.
      *//**
      * @ngdoc method
      * @name $sce#parseAsResourceUrl
@@ -9419,12 +9508,12 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sce#parseAs `$sce.parseAs($sce.RESOURCE_URL, value)`}
      *
      * @param {string} expression String expression to compile.
-     * @returns {function(context, locals)} a function which represents the compiled expression:
+     * @return {function(context, locals)} A function which represents the compiled expression:
      *
-     *    * `context` – `{object}` – an object against which any expressions embedded in the strings
-     *      are evaluated against (typically a scope object).
-     *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
-     *      `context`.
+     *    * `context` – `{object}` – an object against which any expressions embedded in the
+     *      strings are evaluated against (typically a scope object).
+     *    * `locals` – `{object=}` – local variables context object, useful for overriding values
+     *      in `context`.
      *//**
      * @ngdoc method
      * @name $sce#parseAsJs
@@ -9434,12 +9523,12 @@ if(enabled&&msie<8){throw $sceMinErr('iequirks','Strict Contextual Escaping does
      *     {@link ng.$sce#parseAs `$sce.parseAs($sce.JS, value)`}
      *
      * @param {string} expression String expression to compile.
-     * @returns {function(context, locals)} a function which represents the compiled expression:
+     * @return {function(context, locals)} A function which represents the compiled expression:
      *
-     *    * `context` – `{object}` – an object against which any expressions embedded in the strings
-     *      are evaluated against (typically a scope object).
-     *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
-     *      `context`.
+     *    * `context` – `{object}` – an object against which any expressions embedded in the
+     *      strings are evaluated against (typically a scope object).
+     *    * `locals` – `{object=}` – local variables context object, useful for overriding values
+     *      in `context`.
      */// Shorthand delegations.
 var parse=sce.parseAs,getTrusted=sce.getTrusted,trustAs=sce.trustAs;forEach(SCE_CONTEXTS,function(enumValue,name){var lName=lowercase(name);sce[snakeToCamel('parse_as_'+lName)]=function(expr){return parse(enumValue,expr);};sce[snakeToCamel('get_trusted_'+lName)]=function(value){return getTrusted(enumValue,value);};sce[snakeToCamel('trust_as_'+lName)]=function(value){return trustAs(enumValue,value);};});return sce;}];}/* exported $SnifferProvider *//**
  * !!! This is an undocumented "private" service !!!
@@ -9898,8 +9987,9 @@ if(isUndefined(lastCookies[name])){lastCookies[name]=safeDecodeURIComponent(cook
  *     The final result is an array of those elements that the predicate returned true for.
  *
  * @param {function(actual, expected)|true|false} [comparator] Comparator which is used in
- *     determining if the expected value (from the filter expression) and actual value (from
- *     the object in the array) should be considered a match.
+ *     determining if values retrieved using `expression` (when it is not a function) should be
+ *     considered a match based on the the expected value (from the filter expression) and actual
+ *     value (from the object in the array).
  *
  *   Can be one of:
  *
@@ -10163,7 +10253,7 @@ return new Date(year,0,(dayOfWeekOnFirst<=4?5:12)-dayOfWeekOnFirst);}function ge
 datetime.getDate()+(4-datetime.getDay()));}function weekGetter(size){return function(date){var firstThurs=getFirstThursdayOfYear(date.getFullYear()),thisThurs=getThursdayThisWeek(date);var diff=+thisThurs-+firstThurs,result=1+Math.round(diff/6.048e8);// 6.048e8 ms per week
 return padNumber(result,size);};}function ampmGetter(date,formats){return date.getHours()<12?formats.AMPMS[0]:formats.AMPMS[1];}function eraGetter(date,formats){return date.getFullYear()<=0?formats.ERAS[0]:formats.ERAS[1];}function longEraGetter(date,formats){return date.getFullYear()<=0?formats.ERANAMES[0]:formats.ERANAMES[1];}var DATE_FORMATS={yyyy:dateGetter('FullYear',4,0,false,true),yy:dateGetter('FullYear',2,0,true,true),y:dateGetter('FullYear',1,0,false,true),MMMM:dateStrGetter('Month'),MMM:dateStrGetter('Month',true),MM:dateGetter('Month',2,1),M:dateGetter('Month',1,1),LLLL:dateStrGetter('Month',false,true),dd:dateGetter('Date',2),d:dateGetter('Date',1),HH:dateGetter('Hours',2),H:dateGetter('Hours',1),hh:dateGetter('Hours',2,-12),h:dateGetter('Hours',1,-12),mm:dateGetter('Minutes',2),m:dateGetter('Minutes',1),ss:dateGetter('Seconds',2),s:dateGetter('Seconds',1),// while ISO 8601 requires fractions to be prefixed with `.` or `,`
 // we can be just safely rely on using `sss` since we currently don't support single or two digit fractions
-sss:dateGetter('Milliseconds',3),EEEE:dateStrGetter('Day'),EEE:dateStrGetter('Day',true),a:ampmGetter,Z:timeZoneGetter,ww:weekGetter(2),w:weekGetter(1),G:eraGetter,GG:eraGetter,GGG:eraGetter,GGGG:longEraGetter};var DATE_FORMATS_SPLIT=/((?:[^yMLdHhmsaZEwG']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|L+|d+|H+|h+|m+|s+|a|Z|G+|w+))(.*)/,NUMBER_STRING=/^-?\d+$/;/**
+sss:dateGetter('Milliseconds',3),EEEE:dateStrGetter('Day'),EEE:dateStrGetter('Day',true),a:ampmGetter,Z:timeZoneGetter,ww:weekGetter(2),w:weekGetter(1),G:eraGetter,GG:eraGetter,GGG:eraGetter,GGGG:longEraGetter};var DATE_FORMATS_SPLIT=/((?:[^yMLdHhmsaZEwG']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|L+|d+|H+|h+|m+|s+|a|Z|G+|w+))([\s\S]*)/,NUMBER_STRING=/^-?\d+$/;/**
  * @ngdoc filter
  * @name date
  * @kind function
@@ -10218,6 +10308,8 @@ sss:dateGetter('Milliseconds',3),EEEE:dateStrGetter('Day'),EEE:dateStrGetter('Da
  *   `format` string can contain literal values. These need to be escaped by surrounding with single quotes (e.g.
  *   `"h 'in the morning'"`). In order to output a single quote, escape it - i.e., two single quotes in a sequence
  *   (e.g. `"h 'o''clock'"`).
+ *
+ *   Any other characters in the `format` string will be output as-is.
  *
  * @param {(Date|number|string)} date Date to format either as Date object, milliseconds (string or
  *    number) or various ISO 8601 datetime string formats (e.g. yyyy-MM-ddTHH:mm:ss.sssZ and its
@@ -13318,16 +13410,16 @@ var value=ngBindHtmlGetter(scope);element.html($sce.getTrustedHtml(value)||'');}
   ngClassDirective,
   ngClassEvenDirective,
   ngClassOddDirective
-*/function classDirective(name,selector){name='ngClass'+name;var indexWatchExpression;return['$parse',function($parse){return{restrict:'AC',link:function link(scope,element,attr){var expression=attr[name].trim();var isOneTime=expression.charAt(0)===':'&&expression.charAt(1)===':';var watchInterceptor=isOneTime?toFlatValue:toClassString;var watchExpression=$parse(expression,watchInterceptor);var watchAction=isOneTime?ngClassOneTimeWatchAction:ngClassWatchAction;var classCounts=element.data('$classCounts');var oldModulo=true;var oldClassString;if(!classCounts){// Use createMap() to prevent class assumptions involving property
+*/function classDirective(name,selector){name='ngClass'+name;var indexWatchExpression;return['$parse',function($parse){return{restrict:'AC',link:function link(scope,element,attr){var classCounts=element.data('$classCounts');var oldModulo=true;var oldClassString;if(!classCounts){// Use createMap() to prevent class assumptions involving property
 // names in Object.prototype
 classCounts=createMap();element.data('$classCounts',classCounts);}if(name!=='ngClass'){if(!indexWatchExpression){indexWatchExpression=$parse('$index',function moduloTwo($index){// eslint-disable-next-line no-bitwise
-return $index&1;});}scope.$watch(indexWatchExpression,ngClassIndexWatchAction);}scope.$watch(watchExpression,watchAction,isOneTime);function addClasses(classString){classString=digestClassCounts(split(classString),1);attr.$addClass(classString);}function removeClasses(classString){classString=digestClassCounts(split(classString),-1);attr.$removeClass(classString);}function updateClasses(oldClassString,newClassString){var oldClassArray=split(oldClassString);var newClassArray=split(newClassString);var toRemoveArray=arrayDifference(oldClassArray,newClassArray);var toAddArray=arrayDifference(newClassArray,oldClassArray);var toRemoveString=digestClassCounts(toRemoveArray,-1);var toAddString=digestClassCounts(toAddArray,1);attr.$addClass(toAddString);attr.$removeClass(toRemoveString);}function digestClassCounts(classArray,count){var classesToUpdate=[];forEach(classArray,function(className){if(count>0||classCounts[className]){classCounts[className]=(classCounts[className]||0)+count;if(classCounts[className]===+(count>0)){classesToUpdate.push(className);}}});return classesToUpdate.join(' ');}function ngClassIndexWatchAction(newModulo){// This watch-action should run before the `ngClass[OneTime]WatchAction()`, thus it
+return $index&1;});}scope.$watch(indexWatchExpression,ngClassIndexWatchAction);}scope.$watch($parse(attr[name],toClassString),ngClassWatchAction);function addClasses(classString){classString=digestClassCounts(split(classString),1);attr.$addClass(classString);}function removeClasses(classString){classString=digestClassCounts(split(classString),-1);attr.$removeClass(classString);}function updateClasses(oldClassString,newClassString){var oldClassArray=split(oldClassString);var newClassArray=split(newClassString);var toRemoveArray=arrayDifference(oldClassArray,newClassArray);var toAddArray=arrayDifference(newClassArray,oldClassArray);var toRemoveString=digestClassCounts(toRemoveArray,-1);var toAddString=digestClassCounts(toAddArray,1);attr.$addClass(toAddString);attr.$removeClass(toRemoveString);}function digestClassCounts(classArray,count){var classesToUpdate=[];forEach(classArray,function(className){if(count>0||classCounts[className]){classCounts[className]=(classCounts[className]||0)+count;if(classCounts[className]===+(count>0)){classesToUpdate.push(className);}}});return classesToUpdate.join(' ');}function ngClassIndexWatchAction(newModulo){// This watch-action should run before the `ngClassWatchAction()`, thus it
 // adds/removes `oldClassString`. If the `ngClass` expression has changed as well, the
-// `ngClass[OneTime]WatchAction()` will update the classes.
-if(newModulo===selector){addClasses(oldClassString);}else{removeClasses(oldClassString);}oldModulo=newModulo;}function ngClassOneTimeWatchAction(newClassValue){var newClassString=toClassString(newClassValue);if(newClassString!==oldClassString){ngClassWatchAction(newClassString);}}function ngClassWatchAction(newClassString){if(oldModulo===selector){updateClasses(oldClassString,newClassString);}oldClassString=newClassString;}}};}];// Helpers
-function arrayDifference(tokens1,tokens2){if(!tokens1||!tokens1.length)return[];if(!tokens2||!tokens2.length)return tokens1;var values=[];outer:for(var i=0;i<tokens1.length;i++){var token=tokens1[i];for(var j=0;j<tokens2.length;j++){if(token===tokens2[j])continue outer;}values.push(token);}return values;}function split(classString){return classString&&classString.split(' ');}function toClassString(classValue){var classString=classValue;if(isArray(classValue)){classString=classValue.map(toClassString).join(' ');}else if(isObject(classValue)){classString=Object.keys(classValue).filter(function(key){return classValue[key];}).join(' ');}return classString;}function toFlatValue(classValue){var flatValue=classValue;if(isArray(classValue)){flatValue=classValue.map(toFlatValue);}else if(isObject(classValue)){var hasUndefined=false;flatValue=Object.keys(classValue).filter(function(key){var value=classValue[key];if(!hasUndefined&&isUndefined(value)){hasUndefined=true;}return value;});if(hasUndefined){// Prevent the `oneTimeLiteralWatchInterceptor` from unregistering
-// the watcher, by including at least one `undefined` value.
-flatValue.push(undefined);}}return flatValue;}}/**
+// `ngClassWatchAction()` will update the classes.
+if(newModulo===selector){addClasses(oldClassString);}else{removeClasses(oldClassString);}oldModulo=newModulo;}function ngClassWatchAction(newClassString){// When using a one-time binding the newClassString will return
+// the pre-interceptor value until the one-time is complete
+if(!isString(newClassString)){newClassString=toClassString(newClassString);}if(oldModulo===selector){updateClasses(oldClassString,newClassString);}oldClassString=newClassString;}}};}];// Helpers
+function arrayDifference(tokens1,tokens2){if(!tokens1||!tokens1.length)return[];if(!tokens2||!tokens2.length)return tokens1;var values=[];outer:for(var i=0;i<tokens1.length;i++){var token=tokens1[i];for(var j=0;j<tokens2.length;j++){if(token===tokens2[j])continue outer;}values.push(token);}return values;}function split(classString){return classString&&classString.split(' ');}function toClassString(classValue){var classString=classValue;if(isArray(classValue)){classString=classValue.map(toClassString).join(' ');}else if(isObject(classValue)){classString=Object.keys(classValue).filter(function(key){return classValue[key];}).join(' ');}return classString;}}/**
  * @ngdoc directive
  * @name ngClass
  * @restrict AC
@@ -15141,7 +15233,9 @@ ctrl.$isEmpty=function(value){return!value||!value.length;};}};};/* global VALID
 this.$validators={};this.$asyncValidators={};this.$parsers=[];this.$formatters=[];this.$viewChangeListeners=[];this.$untouched=true;this.$touched=false;this.$pristine=true;this.$dirty=false;this.$valid=true;this.$invalid=false;this.$error={};// keep invalid keys here
 this.$$success={};// keep valid keys here
 this.$pending=undefined;// keep pending keys here
-this.$name=$interpolate($attr.name||'',false)($scope);this.$$parentForm=nullFormCtrl;this.$options=defaultModelOptions;this.$$parsedNgModel=$parse($attr.ngModel);this.$$parsedNgModelAssign=this.$$parsedNgModel.assign;this.$$ngModelGet=this.$$parsedNgModel;this.$$ngModelSet=this.$$parsedNgModelAssign;this.$$pendingDebounce=null;this.$$parserValid=undefined;this.$$currentValidationRunId=0;this.$$scope=$scope;this.$$attr=$attr;this.$$element=$element;this.$$animate=$animate;this.$$timeout=$timeout;this.$$parse=$parse;this.$$q=$q;this.$$exceptionHandler=$exceptionHandler;setupValidity(this);setupModelWatcher(this);}NgModelController.prototype={$$initGetterSetters:function $$initGetterSetters(){if(this.$options.getOption('getterSetter')){var invokeModelGetter=this.$$parse(this.$$attr.ngModel+'()'),invokeModelSetter=this.$$parse(this.$$attr.ngModel+'($$$p)');this.$$ngModelGet=function($scope){var modelValue=this.$$parsedNgModel($scope);if(isFunction(modelValue)){modelValue=invokeModelGetter($scope);}return modelValue;};this.$$ngModelSet=function($scope,newValue){if(isFunction(this.$$parsedNgModel($scope))){invokeModelSetter($scope,{$$$p:newValue});}else{this.$$parsedNgModelAssign($scope,newValue);}};}else if(!this.$$parsedNgModel.assign){throw ngModelMinErr('nonassign','Expression \'{0}\' is non-assignable. Element: {1}',this.$$attr.ngModel,startingTag(this.$$element));}},/**
+this.$name=$interpolate($attr.name||'',false)($scope);this.$$parentForm=nullFormCtrl;this.$options=defaultModelOptions;this.$$parsedNgModel=$parse($attr.ngModel);this.$$parsedNgModelAssign=this.$$parsedNgModel.assign;this.$$ngModelGet=this.$$parsedNgModel;this.$$ngModelSet=this.$$parsedNgModelAssign;this.$$pendingDebounce=null;this.$$parserValid=undefined;this.$$currentValidationRunId=0;// https://github.com/angular/angular.js/issues/15833
+// Prevent `$$scope` from being iterated over by `copy` when NgModelController is deep watched
+Object.defineProperty(this,'$$scope',{value:$scope});this.$$attr=$attr;this.$$element=$element;this.$$animate=$animate;this.$$timeout=$timeout;this.$$parse=$parse;this.$$q=$q;this.$$exceptionHandler=$exceptionHandler;setupValidity(this);setupModelWatcher(this);}NgModelController.prototype={$$initGetterSetters:function $$initGetterSetters(){if(this.$options.getOption('getterSetter')){var invokeModelGetter=this.$$parse(this.$$attr.ngModel+'()'),invokeModelSetter=this.$$parse(this.$$attr.ngModel+'($$$p)');this.$$ngModelGet=function($scope){var modelValue=this.$$parsedNgModel($scope);if(isFunction(modelValue)){modelValue=invokeModelGetter($scope);}return modelValue;};this.$$ngModelSet=function($scope,newValue){if(isFunction(this.$$parsedNgModel($scope))){invokeModelSetter($scope,{$$$p:newValue});}else{this.$$parsedNgModelAssign($scope,newValue);}};}else if(!this.$$parsedNgModel.assign){throw ngModelMinErr('nonassign','Expression \'{0}\' is non-assignable. Element: {1}',this.$$attr.ngModel,startingTag(this.$$element));}},/**
    * @ngdoc method
    * @name ngModel.NgModelController#$render
    *
@@ -15429,7 +15523,7 @@ this.$$pendingDebounce=this.$$timeout(function(){that.$commitViewValue();},debou
 //    -> scope value did not change since the last digest as
 //       ng-change executes in apply phase
 // 4. view should be changed back to 'a'
-ctrl.$$scope.$watch(function ngModelWatch(){var modelValue=ctrl.$$ngModelGet(ctrl.$$scope);// if scope model value and ngModel value are out of sync
+ctrl.$$scope.$watch(function ngModelWatch(scope){var modelValue=ctrl.$$ngModelGet(scope);// if scope model value and ngModel value are out of sync
 // TODO(perf): why not move this to the action fn?
 if(modelValue!==ctrl.$modelValue&&(// checks for NaN is needed to allow setting the model to NaN when there's an asyncValidator
 // eslint-disable-next-line no-self-compare
@@ -18169,7 +18263,7 @@ if(window.console){console.log('WARNING: Tried to load angular more than once.')
 bindJQuery();publishExternalAPI(angular);angular.module("ngLocale",[],["$provide",function($provide){var PLURAL_CATEGORY={ZERO:"zero",ONE:"one",TWO:"two",FEW:"few",MANY:"many",OTHER:"other"};function getDecimals(n){n=n+'';var i=n.indexOf('.');return i==-1?0:n.length-i-1;}function getVF(n,opt_precision){var v=opt_precision;if(undefined===v){v=Math.min(getDecimals(n),3);}var base=Math.pow(10,v);var f=(n*base|0)%base;return{v:v,f:f};}$provide.value("$locale",{"DATETIME_FORMATS":{"AMPMS":["AM","PM"],"DAY":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"ERANAMES":["Before Christ","Anno Domini"],"ERAS":["BC","AD"],"FIRSTDAYOFWEEK":6,"MONTH":["January","February","March","April","May","June","July","August","September","October","November","December"],"SHORTDAY":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"SHORTMONTH":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"STANDALONEMONTH":["January","February","March","April","May","June","July","August","September","October","November","December"],"WEEKENDRANGE":[5,6],"fullDate":"EEEE, MMMM d, y","longDate":"MMMM d, y","medium":"MMM d, y h:mm:ss a","mediumDate":"MMM d, y","mediumTime":"h:mm:ss a","short":"M/d/yy h:mm a","shortDate":"M/d/yy","shortTime":"h:mm a"},"NUMBER_FORMATS":{"CURRENCY_SYM":"$","DECIMAL_SEP":".","GROUP_SEP":",","PATTERNS":[{"gSize":3,"lgSize":3,"maxFrac":3,"minFrac":0,"minInt":1,"negPre":"-","negSuf":"","posPre":"","posSuf":""},{"gSize":3,"lgSize":3,"maxFrac":2,"minFrac":2,"minInt":1,"negPre":'-\xA4',"negSuf":"","posPre":'\xA4',"posSuf":""}]},"id":"en-us","localeID":"en_US","pluralCat":function pluralCat(n,opt_precision){var i=n|0;var vf=getVF(n,opt_precision);if(i==1&&vf.v==0){return PLURAL_CATEGORY.ONE;}return PLURAL_CATEGORY.OTHER;}});}]);jqLite(function(){angularInit(window.document,bootstrap);});})(window);!window.angular.$$csp().noInlineStyle&&window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18180,6 +18274,8 @@ var _angular = __webpack_require__(0);
 var _angular2 = _interopRequireDefault(_angular);
 
 __webpack_require__(11);
+
+__webpack_require__(12);
 
 __webpack_require__(9);
 
@@ -18205,9 +18301,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 //---------------- app -------------
 
-var app = _angular2.default.module('app', ['random-serv', 'add-ctrl', 'replace-ctrl', 'update-ctrl', 'swap-ctrl', 'filter10-filter', 'fetch-ctrl', 'search-dir', 'filter10-dir', 'search-ctrl', 'row-ctrl']);
-
 //loading modules
+
+var app = _angular2.default.module('app', ['random-serv', 'add-ctrl', 'replace-ctrl', 'update-ctrl', 'swap-ctrl', 'filter10-filter', 'fetch-ctrl', 'search-dir', 'filter10-dir', 'search-ctrl', 'row-ctrl', 'util-serv']);
 
 app.config(['$compileProvider', function ($compileProvider) {
 	$compileProvider.debugInfoEnabled(false);

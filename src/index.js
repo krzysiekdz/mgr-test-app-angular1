@@ -3,6 +3,7 @@ import angular from 'angular';
 //loading modules
 
 import './services/randomService.js';
+import './services/util.js';
 
 import './directives/search.js';
 import './directives/filter.js';
@@ -20,7 +21,7 @@ import './controllers/searchCtrl.js';
 //---------------- app -------------
 
 var app = angular.module('app', 
-	['random-serv', 'add-ctrl', 'replace-ctrl', 'update-ctrl', 'swap-ctrl', 'filter10-filter', 'fetch-ctrl', 'search-dir', 'filter10-dir', 'search-ctrl', 'row-ctrl']);
+	['random-serv', 'add-ctrl', 'replace-ctrl', 'update-ctrl', 'swap-ctrl', 'filter10-filter', 'fetch-ctrl', 'search-dir', 'filter10-dir', 'search-ctrl', 'row-ctrl', 'util-serv']);
 
 app.config(['$compileProvider', function ($compileProvider) {
     $compileProvider.debugInfoEnabled(false);
