@@ -8,7 +8,7 @@ angular.module('util-serv', [])
 	    if(val >= min && val <= max) {
 	        return val;
 	    }
-	    throw "string-parse exception:" + val;
+	    return min;
 	}
 
 

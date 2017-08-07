@@ -4,9 +4,10 @@ angular.module('replace-ctrl', [])
 	.controller('replaceCtrl', ['$scope', 'randomObjects', 'util',  function($scope, r, util) {
 
 		$scope.count = '';
+		var min = 1, max = 5000;
 
 		$scope.replaceFirst = function(count) {
-			count = util.parseNumber(count, 1, 10000);
+			count = util.parseNumber(count, min, max);
 			var data = $scope.model.data;
 			if(data.length >= count) {
 				var newData = r.randomObjects(count);
@@ -17,7 +18,7 @@ angular.module('replace-ctrl', [])
 		}
 
 		$scope.replaceMid = function(count) {
-			count = util.parseNumber(count, 1, 10000);
+			count = util.parseNumber(count, min, max);
 			var data = $scope.model.data;
 			if(data.length >= count) {
 				var newData = r.randomObjects(count);
@@ -30,7 +31,7 @@ angular.module('replace-ctrl', [])
 		}
 
 		$scope.replaceLast = function(count) {
-			count = util.parseNumber(count, 1, 10000);
+			count = util.parseNumber(count, min, max);
 			var data = $scope.model.data;
 			if(data.length >= count) {
 				var newData = r.randomObjects(count);

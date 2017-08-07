@@ -52,7 +52,7 @@ var ctrl = app.controller('mainCtrl', fn = function($scope, r) {
 	}
 
 	$scope.view = function(v) {
-		return '../src/views/' + v + '.html';
+		return './src/views/' + v + '.html';
 	}
 
 	$scope.clear = function() {

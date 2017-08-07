@@ -13,7 +13,7 @@
     <!-- <tbody name="table" ng-controller="searchTableCtrl"> -->
             
         <!-- <tr ng-repeat="item in model.data | filter10:model.filter10_on  track by item.id" ng-click="selectItem(item)" ng-class="{selected : isSelected(item)}"> -->
-        <tr ng-repeat="item in model.data track by item.id" ng-click="selectItem(item)" ng-class="{selected : isSelected(item)}">
+        <tr ng-repeat="item in model.data track by $index" ng-click="selectItem(item)" ng-class="{selected : isSelected(item)}">
             <td class="col-md-1">{{item.id}}</td>
             <td class="col-md-2" >{{item.c1}}</td>
             <td class="col-md-2" >{{item.c2}}</td>

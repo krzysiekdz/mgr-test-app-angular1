@@ -5,9 +5,10 @@ angular.module('update-ctrl', [])
 
 		$scope.count = '';
 		$scope.every = '';
+		var min = 1, max = 5000;
 
 		$scope.updateFirst = function(count) {
-			count = util.parseNumber(count, 1, 10000);
+			count = util.parseNumber(count, min, max);
 			var data = $scope.model.data;
 			if(data.length >= count) {
 				var newData = r.randomObjects(count);
@@ -18,7 +19,7 @@ angular.module('update-ctrl', [])
 		}
 
 		$scope.updateMid = function(count) {
-			count = util.parseNumber(count, 1, 10000);
+			count = util.parseNumber(count, min, max);
 			var data = $scope.model.data;
 			if(data.length >= count) {
 				var newData = r.randomObjects(count);
@@ -31,7 +32,7 @@ angular.module('update-ctrl', [])
 		}
 
 		$scope.updateLast = function(count) {
-			count = util.parseNumber(count, 1, 10000);
+			count = util.parseNumber(count, min, max);
 			var data = $scope.model.data;
 			if(data.length >= count) {
 				var newData = r.randomObjects(count);
@@ -44,7 +45,7 @@ angular.module('update-ctrl', [])
 		}
 
 		$scope.partialUpdate = function(every) {
-			every = util.parseNumber(every, 1, 1000);
+			every = util.parseNumber(every, min, max);
 			var data = $scope.model.data;
 			var count = Math.ceil(data.length / every);
 			if(data.length > 0) {
@@ -56,7 +57,7 @@ angular.module('update-ctrl', [])
 		}
 	
 		function update(item, newItem) {
-			item.id = newItem.id;
+			// item.id = newItem.id;
 			item.c1 = newItem.c1;
 			item.c2 = newItem.c2;
 			item.c3 = newItem.c3;
